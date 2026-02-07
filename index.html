@@ -1,197 +1,663 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Learning Links</title>
-  <link href="https://fonts.googleapis.com/css2?family=Prata&display=swap" rel="stylesheet">
-  <style>
-    /* General body styling */
-    body {
-      font-family: 'Prata', serif;
-      font-size: 18px;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      background-image: url('view-starry-night-sky-with-nature-mountains-landscape.jpg');
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-      position: relative;
-    }
-
-    /* Main container for the initial layout */
-    .container {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 90%;
-      max-width: 1400px;
-    }
-
-    /* Styling for side link columns */
-    .side-links {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      flex: 1;
-    }
-    
-    /* Center column for the main category buttons */
-    .main-links {
-      flex: 2;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
-
-    /* Container for course links, hidden by default */
-    .content-links {
-        display: none; /* Hidden by default */
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        padding: 20px;
-        box-sizing: border-box;
-    }
-
-    /* General link button style - UPDATED */
-    .link {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      margin: 15px;
-      padding: 0 15px;
-      text-decoration: none;
-      color: #FFFFFF; /* Changed text color to white for better contrast */
-      font-size: 20px;
-      border-radius: 15px;
-      background-color: rgba(25, 25, 112, 0.6); /* Changed to a semi-transparent midnight blue */
-      border: 1px solid rgba(173, 216, 230, 0.5); /* Subtle light blue border */
-      transition: all 0.3s ease;
-      box-sizing: border-box;
-      box-shadow: 0 0 10px rgba(173, 216, 230, 0.5); /* Added a glow effect */
-    }
-
-    .link:hover {
-      background-color: rgba(25, 25, 112, 0.8); /* Darken on hover */
-      transform: scale(1.05);
-      box-shadow: 0 0 20px rgba(173, 216, 230, 0.8); /* Intensify glow on hover */
-    }
-    
-    /* Styling for side links */
-    .side-link {
-        width: 180px;
-        height: 60px;
-    }
-
-    /* Styling for the main "VIệt Nguyễn AI" button */
-    .category-link {
-        width: 360px;
-        height: 72px;
-        font-size: 22px;
-    }
-    
-    /* Grid layout for the 8 course links */
-    .course-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr); /* 2 equal columns */
-        gap: 20px;
-        width: 100%;
-        max-width: 900px;
-    }
-
-    /* Styling for individual course link buttons */
-    .course-link {
-        width: 100%; /* Full width of the grid cell */
-        min-height: 90px;
-        font-size: 18px;
-    }
-
-    /* Back button styling */
-    .back-button {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      width: 120px;
-      height: 60px;
-      font-size: 18px;
-      display: none; /* Hidden by default */
-    }
-
-    /* Responsive design for smaller screens */
-    @media (max-width: 1024px) {
-        body {
-            height: auto;
-            padding: 80px 0 20px 0; /* Add padding for content and back button */
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        .container {
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: radial-gradient(ellipse at bottom, #1B2838 0%, #090A0F 100%);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Deep space background */
+        .space-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse at 20% 80%, rgba(88, 28, 135, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(30, 58, 138, 0.2) 0%, transparent 50%),
+                radial-gradient(ellipse at 40% 40%, rgba(6, 78, 59, 0.1) 0%, transparent 40%);
+            z-index: 0;
+        }
+
+        /* Animated stars - multiple layers for depth */
+        .stars-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .star-tiny {
+            width: 1px;
+            height: 1px;
+            opacity: 0.6;
+        }
+
+        .star-small {
+            width: 2px;
+            height: 2px;
+            opacity: 0.8;
+            animation: twinkle 3s ease-in-out infinite;
+        }
+
+        .star-medium {
+            width: 3px;
+            height: 3px;
+            opacity: 0.9;
+            box-shadow: 0 0 6px 1px rgba(255, 255, 255, 0.5);
+            animation: twinkleBright 4s ease-in-out infinite;
+        }
+
+        .star-large {
+            width: 4px;
+            height: 4px;
+            box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.8);
+            animation: twinkleBright 5s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+
+            0%,
+            100% {
+                opacity: 0.4;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes twinkleBright {
+
+            0%,
+            100% {
+                opacity: 0.6;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.3);
+            }
+        }
+
+        /* Nebula clouds */
+        .nebula {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.3;
+            animation: nebulaDrift 30s ease-in-out infinite;
+            z-index: 0;
+        }
+
+        .nebula-1 {
+            width: 600px;
+            height: 400px;
+            background: linear-gradient(135deg, #581c87 0%, #1e3a8a 50%, transparent 100%);
+            top: -150px;
+            right: -200px;
+        }
+
+        .nebula-2 {
+            width: 500px;
+            height: 500px;
+            background: linear-gradient(135deg, #0f766e 0%, #1e40af 50%, transparent 100%);
+            bottom: -200px;
+            left: -150px;
+            animation-delay: -10s;
+        }
+
+        .nebula-3 {
+            width: 400px;
+            height: 300px;
+            background: linear-gradient(135deg, #7c3aed 0%, #be185d 50%, transparent 100%);
+            top: 40%;
+            left: 30%;
+            opacity: 0.15;
+            animation-delay: -20s;
+        }
+
+        @keyframes nebulaDrift {
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            50% {
+                transform: translate(30px, -20px) scale(1.05);
+            }
+        }
+
+        /* Planet/Moon */
+        .planet {
+            position: fixed;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #e2e8f0 0%, #94a3b8 50%, #475569 100%);
+            box-shadow:
+                inset -20px -20px 40px rgba(0, 0, 0, 0.5),
+                0 0 60px rgba(148, 163, 184, 0.3);
+            top: 80px;
+            right: 10%;
+            z-index: 0;
+            animation: planetFloat 20s ease-in-out infinite;
+        }
+
+        .planet::before {
+            content: '';
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: rgba(71, 85, 105, 0.5);
+            border-radius: 50%;
+            top: 30%;
+            left: 40%;
+        }
+
+        .planet::after {
+            content: '';
+            position: absolute;
+            width: 25px;
+            height: 20px;
+            background: rgba(71, 85, 105, 0.4);
+            border-radius: 50%;
+            top: 50%;
+            left: 25%;
+        }
+
+        @keyframes planetFloat {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+
+        /* Main container */
+        .main-container {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
             flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff 0%, #c4b5fd 30%, #a5f3fc 60%, #fda4af 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+            text-shadow: 0 0 60px rgba(196, 181, 253, 0.5);
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 1.1rem;
+            font-weight: 300;
+        }
+
+        /* Content wrapper */
+        .content-wrapper {
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        /* Section */
+        .section {
+            margin-bottom: 40px;
+        }
+
+        /* Section titles */
+        .section-title {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            padding-left: 5px;
+            text-align: center;
+        }
+
+        /* Cards container - flexbox for centering */
+        .cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
             gap: 20px;
         }
-        .side-links {
-            flex-direction: row;
-            flex-wrap: wrap;
-            gap: 10px;
+
+        /* Link cards */
+        .link-card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             justify-content: center;
+            padding: 25px 20px;
+            text-decoration: none;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+            width: 200px;
+            min-height: 120px;
         }
-        .course-grid {
-            grid-template-columns: 1fr; /* Switch to a single column */
-            max-width: 500px;
+
+        .link-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
-        .category-link {
+
+        .link-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow:
+                0 20px 40px rgba(0, 0, 0, 0.4),
+                0 0 40px var(--glow-color, rgba(139, 92, 246, 0.3));
+        }
+
+        .link-card:hover::before {
+            opacity: 1;
+        }
+
+        .link-card:active {
+            transform: translateY(-4px) scale(1);
+        }
+
+        /* Icon styling */
+        .link-icon {
+            font-size: 2rem;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .link-card:hover .link-icon {
+            transform: scale(1.2);
+            filter: drop-shadow(0 0 10px currentColor);
+        }
+
+        .link-title {
+            color: #fff;
+            font-size: 0.95rem;
+            font-weight: 500;
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        /* Specific card colors */
+        .card-google {
+            --accent: #4285F4;
+            --glow-color: rgba(66, 133, 244, 0.4);
+        }
+
+        .card-chatgpt {
+            --accent: #10a37f;
+            --glow-color: rgba(16, 163, 127, 0.4);
+        }
+
+        .card-gemini {
+            --accent: #8E75FF;
+            --glow-color: rgba(142, 117, 255, 0.4);
+        }
+
+        .card-drive {
+            --accent: #0F9D58;
+            --glow-color: rgba(15, 157, 88, 0.4);
+        }
+
+        .card-notion {
+            --accent: #FFFFFF;
+            --glow-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .card-github {
+            --accent: #f0f6fc;
+            --glow-color: rgba(240, 246, 252, 0.3);
+        }
+
+        .card-calendar {
+            --accent: #FF6B6B;
+            --glow-color: rgba(255, 107, 107, 0.4);
+        }
+
+        .card-mail {
+            --accent: #EA4335;
+            --glow-color: rgba(234, 67, 53, 0.4);
+        }
+
+        .card-notebook {
+            --accent: #FBBC04;
+            --glow-color: rgba(251, 188, 4, 0.4);
+        }
+
+        .card-english {
+            --accent: #00A1E0;
+            --glow-color: rgba(0, 161, 224, 0.5);
+        }
+
+        .card-classroom-1 {
+            --accent: #4CAF50;
+            --glow-color: rgba(76, 175, 80, 0.4);
+        }
+
+        .card-classroom-2 {
+            --accent: #FF9800;
+            --glow-color: rgba(255, 152, 0, 0.4);
+        }
+
+        .link-card .link-icon {
+            color: var(--accent);
+        }
+
+        /* Wide cards */
+        .wide-card {
             width: 300px;
+            min-height: 140px;
         }
-    }
-  </style>
+
+        .wide-card .link-title {
+            font-size: 1.1rem;
+        }
+
+        /* Priority cards - Learning section emphasis */
+        .priority-card {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            animation: priorityPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes priorityPulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
+                border-color: rgba(139, 92, 246, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 0 35px rgba(139, 92, 246, 0.4);
+                border-color: rgba(139, 92, 246, 0.5);
+            }
+        }
+
+        /* Responsive design */
+        @media (max-width: 1024px) {
+            .planet {
+                width: 80px;
+                height: 80px;
+                top: 60px;
+                right: 5%;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .link-card {
+                width: 100%;
+                max-width: 280px;
+                min-height: 100px;
+                padding: 20px 15px;
+            }
+
+            .wide-card {
+                width: 100%;
+                max-width: 280px;
+            }
+
+            .planet {
+                width: 60px;
+                height: 60px;
+                top: 20px;
+            }
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 60px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.25);
+            font-size: 0.85rem;
+        }
+    </style>
 </head>
+
 <body>
+    <!-- Space background layers -->
+    <div class="space-bg"></div>
 
-  <!-- Back Button (initially hidden) -->
-  <a href="#" class="link back-button" id="backButton" onclick="goBack()">Quay Lại</a>
+    <!-- Nebula clouds -->
+    <div class="nebula nebula-1"></div>
+    <div class="nebula nebula-2"></div>
+    <div class="nebula nebula-3"></div>
 
-  <!-- Main Container -->
-  <div class="container" id="mainContainer">
-    <div class="side-links left">
-      <a href="https://www.google.com/" class="link side-link" target="_blank">Google</a>
-      <a href="https://chatgpt.com/" class="link side-link" target="_blank">ChatGPT</a>
-      <a href="https://gemini.google.com/app" class="link side-link" target="_blank">Gemini</a>
-      <a href="https://drive.google.com/" class="link side-link" target="_blank">Google Drive</a>
-      <a href="https://www.notion.so/" class="link side-link" target="_blank">Notion</a>
+    <!-- Planet/Moon -->
+    <div class="planet"></div>
+
+    <!-- Stars layers -->
+    <div class="stars-layer" id="stars-tiny"></div>
+    <div class="stars-layer" id="stars-small"></div>
+    <div class="stars-layer" id="stars-medium"></div>
+    <div class="stars-layer" id="stars-large"></div>
+
+    <div class="main-container">
+        <!-- Header -->
+        <header class="header">
+            <h1>Learning Hub</h1>
+        </header>
+
+        <div class="content-wrapper">
+            <!-- Learning Section - FIRST -->
+            <div class="section">
+                <h3 class="section-title">📚 Học tập</h3>
+                <div class="cards-container">
+                    <a href="https://english-dashboard.pearson.com/dashboard/home/products?activityMode=STUDENT"
+                        class="link-card wide-card card-english priority-card" target="_blank">
+                        <i class="link-icon fas fa-language"></i>
+                        <span class="link-title">My English Lab</span>
+                    </a>
+
+                    <a href="https://classroom.google.com/c/ODM3ODQ0NjQ4MzY2?cjc=7sswt5ux"
+                        class="link-card wide-card card-classroom-1 priority-card" target="_blank">
+                        <i class="link-icon fas fa-chalkboard-teacher"></i>
+                        <span class="link-title">MS. LIỄU Classroom</span>
+                    </a>
+
+                    <a href="https://classroom.google.com/c/ODI0MTAyNDU3ODI5?cjc=iuuf4cc3"
+                        class="link-card wide-card card-classroom-2 priority-card" target="_blank">
+                        <i class="link-icon fas fa-graduation-cap"></i>
+                        <span class="link-title">MS. HÀ Classroom</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- AI & Tools Section -->
+            <div class="section">
+                <h3 class="section-title">🤖 AI & Công cụ</h3>
+                <div class="cards-container">
+                    <a href="https://www.google.com/" class="link-card card-google" target="_blank">
+                        <i class="link-icon fab fa-google"></i>
+                        <span class="link-title">Google</span>
+                    </a>
+
+                    <a href="https://chatgpt.com/" class="link-card card-chatgpt" target="_blank">
+                        <i class="link-icon fas fa-robot"></i>
+                        <span class="link-title">ChatGPT</span>
+                    </a>
+
+                    <a href="https://gemini.google.com/app" class="link-card card-gemini" target="_blank">
+                        <i class="link-icon fas fa-gem"></i>
+                        <span class="link-title">Gemini</span>
+                    </a>
+
+                    <a href="https://notebooklm.google.com/" class="link-card card-notebook" target="_blank">
+                        <i class="link-icon fas fa-brain"></i>
+                        <span class="link-title">NotebookLM</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Productivity Section -->
+            <div class="section">
+                <h3 class="section-title">📁 Năng suất</h3>
+                <div class="cards-container">
+                    <a href="https://drive.google.com/" class="link-card card-drive" target="_blank">
+                        <i class="link-icon fab fa-google-drive"></i>
+                        <span class="link-title">Google Drive</span>
+                    </a>
+
+                    <a href="https://www.notion.so/" class="link-card card-notion" target="_blank">
+                        <i class="link-icon fas fa-book"></i>
+                        <span class="link-title">Notion</span>
+                    </a>
+
+                    <a href="https://calendar.notion.so/" class="link-card card-calendar" target="_blank">
+                        <i class="link-icon fas fa-calendar-alt"></i>
+                        <span class="link-title">Calendar</span>
+                    </a>
+
+                    <a href="https://mail.google.com/mail/" class="link-card card-mail" target="_blank">
+                        <i class="link-icon fas fa-envelope"></i>
+                        <span class="link-title">Gmail</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Development Section -->
+            <div class="section">
+                <h3 class="section-title">💻 Phát triển</h3>
+                <div class="cards-container">
+                    <a href="https://github.com/" class="link-card card-github" target="_blank">
+                        <i class="link-icon fab fa-github"></i>
+                        <span class="link-title">GitHub</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>✨ Created by Hữu ✨</p>
+        </footer>
     </div>
 
-    <div class="main-links">
-      <a href="https://english-dashboard.pearson.com/dashboard/home/products?activityMode=STUDENT" class="link course-link" target="_blank">My English lab</a>
-      <a href="https://classroom.google.com/c/ODM3ODQ0NjQ4MzY2?cjc=7sswt5ux" class="link course-link" target="_blank">MS.LIỄU classroom</a>
-      <a href="https://classroom.google.com/c/ODI0MTAyNDU3ODI5?cjc=iuuf4cc3" class="link course-link" target="_blank">MS.HÀ classroom</a>
-    </div>
+    <script>
+        // Generate multiple star layers for depth
+        function createStars() {
+            const configs = [
+                { id: 'stars-tiny', count: 200, className: 'star star-tiny' },
+                { id: 'stars-small', count: 100, className: 'star star-small' },
+                { id: 'stars-medium', count: 50, className: 'star star-medium' },
+                { id: 'stars-large', count: 15, className: 'star star-large' }
+            ];
 
-    <div class="side-links right">
-      <a href="https://calendar.notion.so/" class="link side-link" target="_blank">Calendar</a>
-      <a href="https://mail.google.com/mail/" class="link side-link" target="_blank">Mail</a>
-      <a href="https://notebooklm.google.com/" class="link side-link" target="_blank">NotebookLM</a>
-    </div>
-  </div>
+            configs.forEach(config => {
+                const container = document.getElementById(config.id);
+                for (let i = 0; i < config.count; i++) {
+                    const star = document.createElement('div');
+                    star.className = config.className;
+                    star.style.left = Math.random() * 100 + '%';
+                    star.style.top = Math.random() * 100 + '%';
+                    star.style.animationDelay = Math.random() * 5 + 's';
+                    star.style.animationDuration = (3 + Math.random() * 4) + 's';
+                    container.appendChild(star);
+                }
+            });
+        }
 
-  <script>
-    function showLinks(subject) {
-      document.getElementById('mainContainer').style.display = 'none';
-      document.getElementById(subject).style.display = 'flex';
-      document.getElementById('backButton').style.display = 'flex';
-    }
+        createStars();
+        // Add ripple effect on click
+        document.querySelectorAll('.link-card').forEach(card => {
+            card.addEventListener('click', function (e) {
+                const ripple = document.createElement('span');
+                ripple.style.cssText = `
+          position: absolute;
+          background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
+          border-radius: 50%;
+          transform: scale(0);
+          animation: ripple 0.6s linear;
+          pointer-events: none;
+        `;
 
-    function goBack() {
-      document.getElementById('mainContainer').style.display = 'flex';
-      document.querySelectorAll('.content-links').forEach(div => div.style.display = 'none');
-      document.getElementById('backButton').style.display = 'none';
-    }
-  </script>
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height) * 2;
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = e.clientX - rect.left - size / 2 + 'px';
+                ripple.style.top = e.clientY - rect.top - size / 2 + 'px';
+
+                this.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+
+        // Add ripple animation
+        const style = document.createElement('style');
+        style.textContent = `
+      @keyframes ripple {
+        to { transform: scale(1); opacity: 0; }
+      }
+    `;
+        document.head.appendChild(style);
+    </script>
 </body>
+
 </html>
