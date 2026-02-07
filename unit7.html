@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 7 - Shopping & Advertising</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ec4899;
+            --secondary: #f43f5e;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1e1b4b;
+            --light: #f8fafc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            color: white;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 20px 40px;
+            border-radius: 20px;
+            text-align: center;
+            color: white;
+        }
+
+        .stat-card h3 {
+            font-size: 2.5rem;
+        }
+
+        .stat-card p {
+            opacity: 0.8;
+        }
+
+        .filter-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 30px 0;
+        }
+
+        .filter-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+            font-size: 0.95rem;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: white;
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .vocab-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .vocab-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vocab-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--primary), var(--secondary));
+        }
+
+        .vocab-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .vocab-card .word {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .speak-btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .speak-btn:hover {
+            transform: scale(1.15);
+            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4);
+        }
+
+        .speak-btn.speaking {
+            animation: pulse 0.8s infinite;
+            background: linear-gradient(135deg, #10b981, #34d399);
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .vocab-card .meaning {
+            color: var(--primary);
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
+
+        .vocab-card .phrase {
+            background: linear-gradient(135deg, #fdf2f8, #fce7f3);
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #334155;
+            display: none;
+        }
+
+        .vocab-card.expanded .phrase {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .vocab-card .phrase strong {
+            color: var(--primary);
+            background: #fbcfe8;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .phrase-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .phrase-header .speak-btn {
+            width: 28px;
+            height: 28px;
+            font-size: 12px;
+        }
+
+        .phrase-label {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 0.85rem;
+        }
+
+        .phrase-text {
+            margin: 0;
+        }
+
+        .category-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .cat-shopping {
+            background: #fce7f3;
+            color: #db2777;
+        }
+
+        .cat-advertising {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .cat-overspending {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .cat-persuasion {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .search-box {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            width: 100%;
+            max-width: 500px;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            font-family: inherit;
+        }
+
+        .search-box input:focus {
+            outline: 3px solid var(--primary);
+        }
+
+        .progress-bar {
+            width: 100%;
+            max-width: 500px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            margin: 20px auto;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #34d399);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .learned-count {
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: white;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            .vocab-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🛍️ Unit 7: Shopping & Advertising</h1>
+            <p>Học từ vựng qua phương pháp cụm từ - Click vào thẻ để xem ví dụ</p>
+        </header>
+        <div class="stats">
+            <div class="stat-card">
+                <h3 id="totalWords">0</h3>
+                <p>Tổng từ vựng</p>
+            </div>
+            <div class="stat-card">
+                <h3>4</h3>
+                <p>Nhóm chủ đề</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="learnedWords">0</h3>
+                <p>Đã học</p>
+            </div>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <p class="learned-count">Tiến độ: <span id="progressText">0%</span></p>
+        <div class="search-box"><input type="text" id="searchInput" placeholder="🔍 Tìm kiếm từ vựng..."></div>
+        <div class="filter-tabs">
+            <button class="filter-btn active" data-filter="all">Tất cả</button>
+            <button class="filter-btn" data-filter="shopping">Mua sắm</button>
+            <button class="filter-btn" data-filter="advertising">Quảng cáo</button>
+            <button class="filter-btn" data-filter="overspending">Chi tiêu quá</button>
+            <button class="filter-btn" data-filter="persuasion">Thuyết phục</button>
+        </div>
+        <div class="vocab-grid" id="vocabGrid"></div>
+        <footer>
+            <p>💡 Mẹo: Click vào thẻ để xem câu ví dụ, double-click để đánh dấu đã học</p>
+        </footer>
+    </div>
+    <script>
+        const vocabularyData = [
+            // Shopping
+            { word: "Browse", meaning: "xem hàng, tham khảo", phrase: "I like to <strong>browse</strong> online stores before buying anything.", category: "shopping" },
+            { word: "Bargain hunt", meaning: "săn hàng giảm giá", phrase: "My mom loves to <strong>bargain hunt</strong> at the weekend market.", category: "shopping" },
+            { word: "Comparison shop", meaning: "so sánh giá", phrase: "You should <strong>comparison shop</strong> before buying a new phone.", category: "shopping" },
+            { word: "Window shop", meaning: "xem hàng (không mua)", phrase: "We just went to <strong>window shop</strong> at the mall today.", category: "shopping" },
+            { word: "Pricey", meaning: "đắt tiền", phrase: "That restaurant is too <strong>pricey</strong> for my budget.", category: "shopping" },
+            { word: "Affordable", meaning: "giá cả phải chăng", phrase: "This store has <strong>affordable</strong> clothes for students.", category: "shopping" },
+            { word: "Deal", meaning: "giao dịch, món hời", phrase: "I got a great <strong>deal</strong> on this laptop - 50% off!", category: "shopping" },
+            { word: "Discount", meaning: "giảm giá", phrase: "Students get a 10% <strong>discount</strong> at this bookstore.", category: "shopping" },
+            { word: "Sale", meaning: "đợt giảm giá", phrase: "The big summer <strong>sale</strong> starts next week.", category: "shopping" },
+            { word: "Refund", meaning: "hoàn tiền", phrase: "I asked for a <strong>refund</strong> because the shirt was damaged.", category: "shopping" },
+            { word: "Customer", meaning: "khách hàng", phrase: "The <strong>customer</strong> is always right, they say.", category: "shopping" },
+            { word: "Clerk", meaning: "nhân viên bán hàng", phrase: "The <strong>clerk</strong> helped me find my size.", category: "shopping" },
+            { word: "Brand", meaning: "thương hiệu", phrase: "Nike is a famous sports <strong>brand</strong> worldwide.", category: "shopping" },
+            { word: "Quality", meaning: "chất lượng", phrase: "I prefer <strong>quality</strong> over quantity when shopping.", category: "shopping" },
+            { word: "Luxury", meaning: "xa xỉ", phrase: "<strong>Luxury</strong> brands are very expensive but high quality.", category: "shopping" },
+            { word: "Item", meaning: "mặt hàng", phrase: "This <strong>item</strong> is out of stock right now.", category: "shopping" },
+            { word: "Purchase", meaning: "mua hàng", phrase: "Thank you for your <strong>purchase</strong>! Come again soon.", category: "shopping" },
+            { word: "Mall", meaning: "trung tâm thương mại", phrase: "The new <strong>mall</strong> has over 200 shops.", category: "shopping" },
+            { word: "Market", meaning: "chợ, thị trường", phrase: "Fresh vegetables are cheaper at the local <strong>market</strong>.", category: "shopping" },
+            { word: "Online", meaning: "trực tuyến", phrase: "More people prefer to shop <strong>online</strong> nowadays.", category: "shopping" },
+            // Advertising
+            { word: "Ad", meaning: "quảng cáo", phrase: "I saw an <strong>ad</strong> for the new iPhone on YouTube.", category: "advertising" },
+            { word: "Advertisement", meaning: "quảng cáo", phrase: "The <strong>advertisement</strong> on TV was very creative.", category: "advertising" },
+            { word: "Commercial", meaning: "quảng cáo (trên TV/Radio)", phrase: "The Super Bowl <strong>commercials</strong> cost millions of dollars.", category: "advertising" },
+            { word: "Endorse", meaning: "quảng bá bằng tên tuổi", phrase: "Famous athletes <strong>endorse</strong> sports products for money.", category: "advertising" },
+            { word: "Promote", meaning: "xúc tiến, quảng bá", phrase: "Companies use social media to <strong>promote</strong> their products.", category: "advertising" },
+            { word: "Imply", meaning: "ngụ ý", phrase: "The ad seems to <strong>imply</strong> that this cream makes you younger.", category: "advertising" },
+            { word: "Prove", meaning: "chứng minh", phrase: "Can you <strong>prove</strong> that this product really works?", category: "advertising" },
+            { word: "Billboard", meaning: "biển quảng cáo lớn", phrase: "There's a huge <strong>billboard</strong> on the highway for Coca-Cola.", category: "advertising" },
+            { word: "Flyer", meaning: "tờ rơi", phrase: "Someone gave me a <strong>flyer</strong> for a new pizza place.", category: "advertising" },
+            { word: "Slogan", meaning: "khẩu hiệu", phrase: "Nike's <strong>slogan</strong> 'Just Do It' is famous worldwide.", category: "advertising" },
+            { word: "Target", meaning: "nhắm tới", phrase: "This ad <strong>targets</strong> young people aged 18-25.", category: "advertising" },
+            { word: "Audience", meaning: "khán giả, người xem", phrase: "The <strong>audience</strong> for this product is mainly women.", category: "advertising" },
+            { word: "Consumer", meaning: "người tiêu dùng", phrase: "<strong>Consumers</strong> today want eco-friendly products.", category: "advertising" },
+            { word: "Influence", meaning: "ảnh hưởng", phrase: "Ads can <strong>influence</strong> what we buy and eat.", category: "advertising" },
+            { word: "Persuasive", meaning: "có tính thuyết phục", phrase: "Good advertisements are very <strong>persuasive</strong>.", category: "advertising" },
+            { word: "Misleading", meaning: "gây hiểu lầm", phrase: "Some ads are <strong>misleading</strong> and not completely true.", category: "advertising" },
+            { word: "Catchy", meaning: "dễ nhớ, bắt tai", phrase: "That jingle is so <strong>catchy</strong> - I can't stop singing it!", category: "advertising" },
+            { word: "Effective", meaning: "hiệu quả", phrase: "Social media ads are very <strong>effective</strong> for reaching young people.", category: "advertising" },
+            { word: "Campaign", meaning: "chiến dịch", phrase: "The new advertising <strong>campaign</strong> increased sales by 30%.", category: "advertising" },
+            { word: "Product", meaning: "sản phẩm", phrase: "This <strong>product</strong> is made from natural ingredients.", category: "advertising" },
+            // Overspending
+            { word: "Shopaholic", meaning: "người nghiện mua sắm", phrase: "My sister is a <strong>shopaholic</strong> who buys something every day.", category: "overspending" },
+            { word: "Splurge", meaning: "tiêu xài phung phí", phrase: "I decided to <strong>splurge</strong> on a nice dinner for my birthday.", category: "overspending" },
+            { word: "Impulse buy", meaning: "mua theo cảm hứng", phrase: "This dress was an <strong>impulse buy</strong> - I didn't plan to get it.", category: "overspending" },
+            { word: "Go overboard", meaning: "làm quá, vượt mức", phrase: "Don't <strong>go overboard</strong> with shopping during the sale.", category: "overspending" },
+            { word: "Debt", meaning: "nợ nần", phrase: "Too much shopping can lead to serious <strong>debt</strong>.", category: "overspending" },
+            { word: "Credit", meaning: "tín dụng", phrase: "Be careful when using your <strong>credit</strong> card.", category: "overspending" },
+            { word: "Limit", meaning: "giới hạn", phrase: "I set a spending <strong>limit</strong> of $100 per month.", category: "overspending" },
+            { word: "Budget", meaning: "ngân sách", phrase: "You should make a <strong>budget</strong> to control your spending.", category: "overspending" },
+            { word: "Resist", meaning: "chống lại, cưỡng lại", phrase: "I couldn't <strong>resist</strong> buying those cute shoes.", category: "overspending" },
+            { word: "Temptation", meaning: "sự cám dỗ", phrase: "Sales create a strong <strong>temptation</strong> to buy more.", category: "overspending" },
+            { word: "Addiction", meaning: "nghiện ngập", phrase: "Shopping <strong>addiction</strong> is a real problem for some people.", category: "overspending" },
+            { word: "Compulsive", meaning: "không kiểm soát", phrase: "<strong>Compulsive</strong> shopping can hurt your finances.", category: "overspending" },
+            { word: "Spender", meaning: "người tiêu tiền", phrase: "He is a big <strong>spender</strong> who loves expensive things.", category: "overspending" },
+            { word: "Regret", meaning: "hối tiếc", phrase: "I <strong>regret</strong> buying that expensive bag.", category: "overspending" },
+            { word: "Guilt", meaning: "cảm giác có lỗi", phrase: "She felt <strong>guilt</strong> after spending so much money.", category: "overspending" },
+            { word: "Max out", meaning: "đạt tới giới hạn", phrase: "He <strong>maxed out</strong> his credit card last month.", category: "overspending" },
+            { word: "Loan", meaning: "khoản vay", phrase: "She took out a <strong>loan</strong> to pay off her shopping debt.", category: "overspending" },
+            { word: "Financial", meaning: "thuộc về tài chính", phrase: "Good <strong>financial</strong> planning helps you save money.", category: "overspending" },
+            { word: "Control", meaning: "kiểm soát", phrase: "You need to <strong>control</strong> your spending habits.", category: "overspending" },
+            { word: "Habit", meaning: "thói quen", phrase: "Shopping every day became a bad <strong>habit</strong> for her.", category: "overspending" },
+            // Persuasion
+            { word: "Persuade", meaning: "thuyết phục", phrase: "The salesman tried to <strong>persuade</strong> me to buy the car.", category: "persuasion" },
+            { word: "Convince", meaning: "làm cho tin", phrase: "She <strong>convinced</strong> me that this phone was the best.", category: "persuasion" },
+            { word: "Encourage", meaning: "khuyến khích", phrase: "The store <strong>encourages</strong> customers to try free samples.", category: "persuasion" },
+            { word: "Recommend", meaning: "giới thiệu, đề xuất", phrase: "I <strong>recommend</strong> this restaurant - the food is amazing!", category: "persuasion" },
+            { word: "Suggest", meaning: "gợi ý", phrase: "Can you <strong>suggest</strong> a good laptop for students?", category: "persuasion" },
+            { word: "Claim", meaning: "khẳng định", phrase: "The ad <strong>claims</strong> this cream removes wrinkles.", category: "persuasion" },
+            { word: "Demonstration", meaning: "trình diễn, minh họa", phrase: "The <strong>demonstration</strong> showed how well the vacuum works.", category: "persuasion" },
+            { word: "Testimonial", meaning: "lời chứng thực", phrase: "Customer <strong>testimonials</strong> help build trust in products.", category: "persuasion" },
+            { word: "Statistics", meaning: "số liệu thống kê", phrase: "The ad uses <strong>statistics</strong> to prove its claims.", category: "persuasion" },
+            { word: "Fact", meaning: "sự thật", phrase: "Is this an opinion or a <strong>fact</strong>?", category: "persuasion" },
+            { word: "Appeal", meaning: "kêu gọi, hấp dẫn", phrase: "The ad uses emotional <strong>appeal</strong> to sell products.", category: "persuasion" },
+            { word: "Emotion", meaning: "cảm xúc", phrase: "Ads often play on our <strong>emotions</strong> to make us buy.", category: "persuasion" },
+            { word: "Logic", meaning: "lý luận", phrase: "Use <strong>logic</strong> instead of emotions when shopping.", category: "persuasion" },
+            { word: "Reason", meaning: "lí do", phrase: "Give me one good <strong>reason</strong> to buy this product.", category: "persuasion" },
+            { word: "Trust", meaning: "tin tưởng", phrase: "Customers <strong>trust</strong> brands with good reviews.", category: "persuasion" },
+            { word: "Reliable", meaning: "đáng tin cậy", phrase: "This is a <strong>reliable</strong> brand that I always buy.", category: "persuasion" },
+            { word: "Guarantee", meaning: "bảo đảm", phrase: "The product comes with a money-back <strong>guarantee</strong>.", category: "persuasion" },
+            { word: "Promise", meaning: "lời hứa", phrase: "The company <strong>promises</strong> free shipping on all orders.", category: "persuasion" },
+            { word: "Benefit", meaning: "lợi ích", phrase: "The main <strong>benefit</strong> of this cream is softer skin.", category: "persuasion" },
+            { word: "Feature", meaning: "đặc điểm", phrase: "This phone has many useful <strong>features</strong>.", category: "persuasion" }
+        ];
+        const categoryLabels = {
+            shopping: { label: "Mua sắm", class: "cat-shopping" },
+            advertising: { label: "Quảng cáo", class: "cat-advertising" },
+            overspending: { label: "Chi tiêu quá", class: "cat-overspending" },
+            persuasion: { label: "Thuyết phục", class: "cat-persuasion" }
+        };
+        let learnedWords = JSON.parse(localStorage.getItem('unit7Learned') || '[]');
+        let currentFilter = 'all';
+        function speakWord(word, button) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(word);
+            utterance.lang = 'en-US'; utterance.rate = 0.85; utterance.pitch = 1;
+            const voices = window.speechSynthesis.getVoices();
+            const englishVoice = voices.find(v => v.lang.startsWith('en'));
+            if (englishVoice) utterance.voice = englishVoice;
+            button.classList.add('speaking');
+            utterance.onend = () => button.classList.remove('speaking');
+            utterance.onerror = () => button.classList.remove('speaking');
+            window.speechSynthesis.speak(utterance);
+        }
+        function speakPhrase(phraseHtml, button) {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = phraseHtml;
+            speakWord(tempDiv.textContent || tempDiv.innerText, button);
+        }
+        if (window.speechSynthesis.onvoiceschanged !== undefined) {
+            window.speechSynthesis.onvoiceschanged = () => { };
+        }
+        function renderCards(filter = 'all', search = '') {
+            const grid = document.getElementById('vocabGrid');
+            grid.innerHTML = '';
+            let filteredData = vocabularyData;
+            if (filter !== 'all') filteredData = filteredData.filter(v => v.category === filter);
+            if (search) {
+                const s = search.toLowerCase();
+                filteredData = filteredData.filter(v => v.word.toLowerCase().includes(s) || v.meaning.toLowerCase().includes(s));
+            }
+            filteredData.forEach(vocab => {
+                const cat = categoryLabels[vocab.category];
+                const isLearned = learnedWords.includes(vocab.word);
+                const card = document.createElement('div');
+                card.className = `vocab-card ${isLearned ? 'learned' : ''}`;
+                card.style.opacity = isLearned ? '0.7' : '1';
+                const phraseEscaped = vocab.phrase.replace(/'/g, "\\'");
+                card.innerHTML = `
+                    <span class="category-tag ${cat.class}">${cat.label}</span>
+                    <div class="word">
+                        <button class="speak-btn" onclick="event.stopPropagation(); speakWord('${vocab.word}', this)" title="Nghe phát âm từ">🔊</button>
+                        <span>${isLearned ? '✅ ' : ''}${vocab.word}</span>
+                    </div>
+                    <div class="meaning">${vocab.meaning}</div>
+                    <div class="phrase">
+                        <div class="phrase-header">
+                            <button class="speak-btn" onclick="event.stopPropagation(); speakPhrase('${phraseEscaped}', this)" title="Nghe câu ví dụ">🔊</button>
+                            <span class="phrase-label">Ví dụ:</span>
+                        </div>
+                        <p class="phrase-text">${vocab.phrase}</p>
+                    </div>`;
+                card.addEventListener('click', () => card.classList.toggle('expanded'));
+                card.addEventListener('dblclick', () => toggleLearned(vocab.word));
+                grid.appendChild(card);
+            });
+            updateProgress();
+        }
+        function toggleLearned(word) {
+            if (learnedWords.includes(word)) learnedWords = learnedWords.filter(w => w !== word);
+            else learnedWords.push(word);
+            localStorage.setItem('unit7Learned', JSON.stringify(learnedWords));
+            renderCards(currentFilter, document.getElementById('searchInput').value);
+        }
+        function updateProgress() {
+            const total = vocabularyData.length;
+            const learned = learnedWords.length;
+            const percent = Math.round((learned / total) * 100);
+            document.getElementById('learnedWords').textContent = learned;
+            document.getElementById('totalWords').textContent = total;
+            document.getElementById('progressFill').style.width = percent + '%';
+            document.getElementById('progressText').textContent = percent + '%';
+        }
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilter = btn.dataset.filter;
+                renderCards(currentFilter, document.getElementById('searchInput').value);
+            });
+        });
+        document.getElementById('searchInput').addEventListener('input', e => renderCards(currentFilter, e.target.value));
+        renderCards();
+    </script>
+</body>
+
+</html>

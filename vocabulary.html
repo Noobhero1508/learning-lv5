@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vocabulary - Chọn Unit</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            background: radial-gradient(ellipse at bottom, #1B2838 0%, #090A0F 100%);
+            overflow-x: hidden;
+        }
+
+        .space-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse at 20% 80%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(236, 72, 153, 0.15) 0%, transparent 50%);
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 0.95rem;
+            padding: 10px 20px;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+            margin-bottom: 30px;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            transform: translateX(-5px);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff 0%, #c4b5fd 30%, #f9a8d4 60%, #fbbf24 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+        }
+
+        header p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 1.1rem;
+        }
+
+        .units-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .unit-card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding: 30px;
+            text-decoration: none;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+        }
+
+        .unit-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient);
+        }
+
+        .unit-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4), 0 0 50px var(--glow);
+        }
+
+        .unit-number {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .unit-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .unit-title .emoji {
+            font-size: 2rem;
+        }
+
+        .unit-description {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .unit-stats {
+            display: flex;
+            gap: 15px;
+            margin-top: auto;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.85rem;
+        }
+
+        .stat i {
+            color: var(--accent);
+        }
+
+        /* Unit colors */
+        .unit-6 {
+            --gradient: linear-gradient(90deg, #6366f1, #8b5cf6);
+            --glow: rgba(99, 102, 241, 0.3);
+            --accent: #8b5cf6;
+        }
+
+        .unit-7 {
+            --gradient: linear-gradient(90deg, #ec4899, #f43f5e);
+            --glow: rgba(236, 72, 153, 0.3);
+            --accent: #ec4899;
+        }
+
+        .unit-8 {
+            --gradient: linear-gradient(90deg, #0891b2, #0d9488);
+            --glow: rgba(8, 145, 178, 0.3);
+            --accent: #06b6d4;
+        }
+
+        .unit-9 {
+            --gradient: linear-gradient(90deg, #f59e0b, #ef4444);
+            --glow: rgba(245, 158, 11, 0.3);
+            --accent: #f59e0b;
+        }
+
+        .unit-10 {
+            --gradient: linear-gradient(90deg, #10b981, #3b82f6);
+            --glow: rgba(16, 185, 129, 0.3);
+            --accent: #10b981;
+        }
+
+        .progress-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .progress-bar-mini {
+            flex: 1;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill-mini {
+            height: 100%;
+            background: var(--gradient);
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.8rem;
+            min-width: 35px;
+            text-align: right;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            .units-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="space-bg"></div>
+
+    <div class="container">
+        <a href="lv5.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i>
+            Quay lại Learning Hub
+        </a>
+
+        <header>
+            <h1>📚 Vocabulary Practice</h1>
+            <p>Chọn Unit để bắt đầu học từ vựng</p>
+        </header>
+
+        <div class="units-grid">
+            <a href="unit6.html" class="unit-card unit-6" data-unit="6">
+                <span class="unit-number">Unit 6</span>
+                <div class="unit-title">
+                    <span class="emoji">🦁</span>
+                    Animals & Nature
+                </div>
+                <p class="unit-description">Động vật, môi trường sống, bảo tồn và các mối đe dọa thiên nhiên</p>
+                <div class="unit-stats">
+                    <span class="stat"><i class="fas fa-book"></i> 77 từ</span>
+                    <span class="stat"><i class="fas fa-layer-group"></i> 12 nhóm</span>
+                </div>
+                <div class="progress-indicator">
+                    <div class="progress-bar-mini">
+                        <div class="progress-fill-mini" id="progress-6"></div>
+                    </div>
+                    <span class="progress-text" id="progress-text-6">0%</span>
+                </div>
+            </a>
+
+            <a href="unit7.html" class="unit-card unit-7" data-unit="7">
+                <span class="unit-number">Unit 7</span>
+                <div class="unit-title">
+                    <span class="emoji">🛍️</span>
+                    Shopping & Advertising
+                </div>
+                <p class="unit-description">Mua sắm, quảng cáo, chi tiêu và thuyết phục khách hàng</p>
+                <div class="unit-stats">
+                    <span class="stat"><i class="fas fa-book"></i> 80 từ</span>
+                    <span class="stat"><i class="fas fa-layer-group"></i> 4 nhóm</span>
+                </div>
+                <div class="progress-indicator">
+                    <div class="progress-bar-mini">
+                        <div class="progress-fill-mini" id="progress-7"></div>
+                    </div>
+                    <span class="progress-text" id="progress-text-7">0%</span>
+                </div>
+            </a>
+
+            <a href="unit8.html" class="unit-card unit-8" data-unit="8">
+                <span class="unit-number">Unit 8</span>
+                <div class="unit-title">
+                    <span class="emoji">👨‍👩‍👧‍👦</span>
+                    Family & Demographics
+                </div>
+                <p class="unit-description">Gia đình, nhân khẩu học, nuôi dạy con và thế hệ</p>
+                <div class="unit-stats">
+                    <span class="stat"><i class="fas fa-book"></i> 79 từ</span>
+                    <span class="stat"><i class="fas fa-layer-group"></i> 4 nhóm</span>
+                </div>
+                <div class="progress-indicator">
+                    <div class="progress-bar-mini">
+                        <div class="progress-fill-mini" id="progress-8"></div>
+                    </div>
+                    <span class="progress-text" id="progress-text-8">0%</span>
+                </div>
+            </a>
+
+            <a href="unit9.html" class="unit-card unit-9" data-unit="9">
+                <span class="unit-number">Unit 9</span>
+                <div class="unit-title">
+                    <span class="emoji">🔍</span>
+                    Certainty & News
+                </div>
+                <p class="unit-description">Mức độ chắc chắn, điều tra, độ tin cậy và tin tức</p>
+                <div class="unit-stats">
+                    <span class="stat"><i class="fas fa-book"></i> 78 từ</span>
+                    <span class="stat"><i class="fas fa-layer-group"></i> 4 nhóm</span>
+                </div>
+                <div class="progress-indicator">
+                    <div class="progress-bar-mini">
+                        <div class="progress-fill-mini" id="progress-9"></div>
+                    </div>
+                    <span class="progress-text" id="progress-text-9">0%</span>
+                </div>
+            </a>
+
+            <a href="unit10.html" class="unit-card unit-10" data-unit="10">
+                <span class="unit-number">Unit 10</span>
+                <div class="unit-title">
+                    <span class="emoji">🧘</span>
+                    Stress & Technology
+                </div>
+                <p class="unit-description">Căng thẳng, sở thích, công nghệ và rủi ro mạo hiểm</p>
+                <div class="unit-stats">
+                    <span class="stat"><i class="fas fa-book"></i> 80 từ</span>
+                    <span class="stat"><i class="fas fa-layer-group"></i> 4 nhóm</span>
+                </div>
+                <div class="progress-indicator">
+                    <div class="progress-bar-mini">
+                        <div class="progress-fill-mini" id="progress-10"></div>
+                    </div>
+                    <span class="progress-text" id="progress-text-10">0%</span>
+                </div>
+            </a>
+        </div>
+
+        <footer>
+            <p>💡 Click vào unit để bắt đầu học từ vựng qua phương pháp cụm từ</p>
+        </footer>
+    </div>
+
+    <script>
+        // Load and display progress for each unit
+        const unitWordCounts = { 6: 77, 7: 80, 8: 79, 9: 78, 10: 80 };
+
+        Object.keys(unitWordCounts).forEach(unit => {
+            const storageKey = `unit${unit}Learned`;
+            const learned = JSON.parse(localStorage.getItem(storageKey) || '[]');
+            const total = unitWordCounts[unit];
+            const percent = Math.round((learned.length / total) * 100);
+
+            const progressBar = document.getElementById(`progress-${unit}`);
+            const progressText = document.getElementById(`progress-text-${unit}`);
+
+            if (progressBar) progressBar.style.width = percent + '%';
+            if (progressText) progressText.textContent = percent + '%';
+        });
+    </script>
+</body>
+
+</html>

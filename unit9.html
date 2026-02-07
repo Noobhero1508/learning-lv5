@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 9 - Certainty & News</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #f59e0b;
+            --secondary: #ef4444;
+            --success: #10b981;
+            --dark: #1e1b4b;
+            --light: #f8fafc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #f59e0b 0%, #dc2626 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            color: white;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 20px 40px;
+            border-radius: 20px;
+            text-align: center;
+            color: white;
+        }
+
+        .stat-card h3 {
+            font-size: 2.5rem;
+        }
+
+        .stat-card p {
+            opacity: 0.8;
+        }
+
+        .filter-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 30px 0;
+        }
+
+        .filter-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+            font-size: 0.95rem;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: white;
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .vocab-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .vocab-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vocab-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--primary), var(--secondary));
+        }
+
+        .vocab-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .vocab-card .word {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .speak-btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .speak-btn:hover {
+            transform: scale(1.15);
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+        }
+
+        .speak-btn.speaking {
+            animation: pulse 0.8s infinite;
+            background: linear-gradient(135deg, #10b981, #34d399);
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .vocab-card .meaning {
+            color: var(--primary);
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
+
+        .vocab-card .phrase {
+            background: linear-gradient(135deg, #fffbeb, #fef3c7);
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #334155;
+            display: none;
+        }
+
+        .vocab-card.expanded .phrase {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .vocab-card .phrase strong {
+            color: var(--secondary);
+            background: #fecaca;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .phrase-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .phrase-header .speak-btn {
+            width: 28px;
+            height: 28px;
+            font-size: 12px;
+        }
+
+        .phrase-label {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 0.85rem;
+        }
+
+        .phrase-text {
+            margin: 0;
+        }
+
+        .category-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .cat-certainty {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .cat-investigation {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .cat-credibility {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        .cat-news {
+            background: #fce7f3;
+            color: #db2777;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .search-box {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            width: 100%;
+            max-width: 500px;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            font-family: inherit;
+        }
+
+        .search-box input:focus {
+            outline: 3px solid var(--primary);
+        }
+
+        .progress-bar {
+            width: 100%;
+            max-width: 500px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            margin: 20px auto;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #34d399);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .learned-count {
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: white;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            .vocab-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🔍 Unit 9: Certainty & News</h1>
+            <p>Học từ vựng qua phương pháp cụm từ - Click vào thẻ để xem ví dụ</p>
+        </header>
+        <div class="stats">
+            <div class="stat-card">
+                <h3 id="totalWords">0</h3>
+                <p>Tổng từ vựng</p>
+            </div>
+            <div class="stat-card">
+                <h3>4</h3>
+                <p>Nhóm chủ đề</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="learnedWords">0</h3>
+                <p>Đã học</p>
+            </div>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <p class="learned-count">Tiến độ: <span id="progressText">0%</span></p>
+        <div class="search-box"><input type="text" id="searchInput" placeholder="🔍 Tìm kiếm từ vựng..."></div>
+        <div class="filter-tabs">
+            <button class="filter-btn active" data-filter="all">Tất cả</button>
+            <button class="filter-btn" data-filter="certainty">Mức độ chắc chắn</button>
+            <button class="filter-btn" data-filter="investigation">Điều tra</button>
+            <button class="filter-btn" data-filter="credibility">Độ tin cậy</button>
+            <button class="filter-btn" data-filter="news">Tin tức</button>
+        </div>
+        <div class="vocab-grid" id="vocabGrid"></div>
+        <footer>
+            <p>💡 Mẹo: Click vào thẻ để xem câu ví dụ, double-click để đánh dấu đã học</p>
+        </footer>
+    </div>
+    <script>
+        const vocabularyData = [
+            // Certainty
+            { word: "Obvious", meaning: "rõ ràng", phrase: "It's <strong>obvious</strong> that she is lying.", category: "certainty" },
+            { word: "Apparently", meaning: "rõ ràng là / dường như", phrase: "<strong>Apparently</strong>, the meeting has been cancelled.", category: "certainty" },
+            { word: "Presumably", meaning: "có lẽ, giả sử", phrase: "<strong>Presumably</strong>, they will arrive before dinner.", category: "certainty" },
+            { word: "Likely", meaning: "có khả năng", phrase: "It's <strong>likely</strong> to rain this afternoon.", category: "certainty" },
+            { word: "Unlikely", meaning: "ít khả năng", phrase: "It's <strong>unlikely</strong> that he will come to the party.", category: "certainty" },
+            { word: "Definitely", meaning: "chắc chắn", phrase: "I will <strong>definitely</strong> be there at 8 PM.", category: "certainty" },
+            { word: "Probably", meaning: "có lẽ", phrase: "She will <strong>probably</strong> call you later.", category: "certainty" },
+            { word: "Maybe", meaning: "có thể", phrase: "<strong>Maybe</strong> we should ask for directions.", category: "certainty" },
+            { word: "Possibly", meaning: "khả năng là", phrase: "This could <strong>possibly</strong> be the best solution.", category: "certainty" },
+            { word: "Certain", meaning: "chắc chắn", phrase: "I'm <strong>certain</strong> that I locked the door.", category: "certainty" },
+            { word: "Unsure", meaning: "không chắc", phrase: "I'm <strong>unsure</strong> about what to wear tonight.", category: "certainty" },
+            { word: "Doubt", meaning: "nghi ngờ", phrase: "I <strong>doubt</strong> that story is true.", category: "certainty" },
+            { word: "Question", meaning: "câu hỏi", phrase: "That <strong>question</strong> is hard to answer.", category: "certainty" },
+            { word: "Bet", meaning: "đoán chắc (thông tục)", phrase: "I <strong>bet</strong> you forgot your homework again!", category: "certainty" },
+            { word: "Wonder", meaning: "tự hỏi", phrase: "I <strong>wonder</strong> if they received my message.", category: "certainty" },
+            { word: "Clear", meaning: "rõ ràng", phrase: "It's <strong>clear</strong> that we need more time.", category: "certainty" },
+            { word: "Mystery", meaning: "bí ẩn", phrase: "Her disappearance remains a <strong>mystery</strong>.", category: "certainty" },
+            { word: "Puzzle", meaning: "câu đố / điều khó hiểu", phrase: "This math problem is a real <strong>puzzle</strong>.", category: "certainty" },
+            { word: "Explain", meaning: "giải thích", phrase: "Can you <strong>explain</strong> how this works?", category: "certainty" },
+            { word: "Logic", meaning: "logic, luận lý", phrase: "Use <strong>logic</strong> to solve this problem.", category: "certainty" },
+            { word: "Theory", meaning: "lý thuyết", phrase: "Scientists developed a new <strong>theory</strong> about the universe.", category: "certainty" },
+            { word: "Fact", meaning: "sự kiện", phrase: "That's not an opinion, it's a <strong>fact</strong>.", category: "certainty" },
+            { word: "Speculation", meaning: "suy đoán", phrase: "There is a lot of <strong>speculation</strong> about what happened.", category: "certainty" },
+            { word: "Guess", meaning: "phỏng đoán", phrase: "I can only <strong>guess</strong> what she's thinking.", category: "certainty" },
+            { word: "Hypothesis", meaning: "giả thuyết", phrase: "The scientist tested her <strong>hypothesis</strong> in the lab.", category: "certainty" },
+            // Investigation
+            { word: "Evidence", meaning: "bằng chứng", phrase: "The police found <strong>evidence</strong> at the crime scene.", category: "investigation" },
+            { word: "Proof", meaning: "chứng cứ", phrase: "Is there any <strong>proof</strong> that he was there?", category: "investigation" },
+            { word: "Clue", meaning: "manh mối", phrase: "The detective found an important <strong>clue</strong>.", category: "investigation" },
+            { word: "Solve", meaning: "giải quyết", phrase: "The detective managed to <strong>solve</strong> the mystery.", category: "investigation" },
+            { word: "Investigate", meaning: "điều tra", phrase: "Police are <strong>investigating</strong> the robbery.", category: "investigation" },
+            { word: "Detective", meaning: "điều tra viên", phrase: "The <strong>detective</strong> interviewed all the witnesses.", category: "investigation" },
+            { word: "Crime", meaning: "tội ác", phrase: "The <strong>crime</strong> took place last night.", category: "investigation" },
+            { word: "Suspect", meaning: "nghi phạm", phrase: "The police arrested the main <strong>suspect</strong>.", category: "investigation" },
+            { word: "Motive", meaning: "động cơ", phrase: "What was the <strong>motive</strong> for the crime?", category: "investigation" },
+            { word: "Alibi", meaning: "bằng chứng ngoại phạm", phrase: "He has an <strong>alibi</strong> - he was at work all day.", category: "investigation" },
+            { word: "Witness", meaning: "nhân chứng", phrase: "The <strong>witness</strong> saw everything that happened.", category: "investigation" },
+            { word: "Testimony", meaning: "lời khai", phrase: "Her <strong>testimony</strong> helped solve the case.", category: "investigation" },
+            { word: "Deduce", meaning: "suy luận", phrase: "From the clues, I can <strong>deduce</strong> what happened.", category: "investigation" },
+            { word: "Conclude", meaning: "kết luận", phrase: "The report <strong>concluded</strong> that he was innocent.", category: "investigation" },
+            { word: "Infer", meaning: "suy ra", phrase: "What can you <strong>infer</strong> from this evidence?", category: "investigation" },
+            // Credibility
+            { word: "Believable", meaning: "có thể tin được", phrase: "His story sounds <strong>believable</strong>.", category: "credibility" },
+            { word: "Unbelievable", meaning: "khó tin", phrase: "That excuse is totally <strong>unbelievable</strong>!", category: "credibility" },
+            { word: "Questionable", meaning: "đáng ngờ", phrase: "The source of this information is <strong>questionable</strong>.", category: "credibility" },
+            { word: "Debatable", meaning: "còn bàn cãi", phrase: "Whether this is true is still <strong>debatable</strong>.", category: "credibility" },
+            { word: "Provable", meaning: "có thể chứng minh", phrase: "This claim is easily <strong>provable</strong>.", category: "credibility" },
+            { word: "Unsolvable", meaning: "không thể giải quyết", phrase: "Some mysteries remain <strong>unsolvable</strong>.", category: "credibility" },
+            { word: "Far-fetched", meaning: "khó tin, vô lý", phrase: "That theory sounds <strong>far-fetched</strong> to me.", category: "credibility" },
+            { word: "Convincing", meaning: "thuyết phục", phrase: "Her argument was very <strong>convincing</strong>.", category: "credibility" },
+            { word: "Credible", meaning: "đáng tin", phrase: "This newspaper is a <strong>credible</strong> source.", category: "credibility" },
+            { word: "Dubious", meaning: "đáng nghi", phrase: "I'm <strong>dubious</strong> about his intentions.", category: "credibility" },
+            { word: "Reliable", meaning: "đáng tin cậy", phrase: "She is a very <strong>reliable</strong> person.", category: "credibility" },
+            { word: "Trustworthy", meaning: "đáng tin cậy, trung thực", phrase: "He's <strong>trustworthy</strong> - you can tell him anything.", category: "credibility" },
+            { word: "Suspicious", meaning: "khả nghi", phrase: "His behavior is very <strong>suspicious</strong>.", category: "credibility" },
+            { word: "Fishy", meaning: "có mùi (nghi ngờ)", phrase: "Something about this deal seems <strong>fishy</strong>.", category: "credibility" },
+            { word: "Nonsense", meaning: "vô nghĩa", phrase: "That's complete <strong>nonsense</strong>!", category: "credibility" },
+            { word: "Rumor", meaning: "tin đồn", phrase: "Don't believe every <strong>rumor</strong> you hear.", category: "credibility" },
+            { word: "Myth", meaning: "thần thoại / hiểu lầm", phrase: "It's a <strong>myth</strong> that we only use 10% of our brain.", category: "credibility" },
+            { word: "Legend", meaning: "truyền thuyết", phrase: "The story of King Arthur is a famous <strong>legend</strong>.", category: "credibility" },
+            { word: "Truth", meaning: "sự thật", phrase: "The <strong>truth</strong> will come out eventually.", category: "credibility" },
+            { word: "Lie", meaning: "lời nói dối", phrase: "She told a <strong>lie</strong> to avoid trouble.", category: "credibility" },
+            { word: "Plausible", meaning: "hợp lý", phrase: "His explanation sounds <strong>plausible</strong>.", category: "credibility" },
+            { word: "Skepticism", meaning: "hoài nghi", phrase: "Healthy <strong>skepticism</strong> helps you spot fake news.", category: "credibility" },
+            // News
+            { word: "Source", meaning: "nguồn tin", phrase: "What's the <strong>source</strong> of this information?", category: "news" },
+            { word: "Bias", meaning: "thiên vị", phrase: "Every news channel has some <strong>bias</strong>.", category: "news" },
+            { word: "Fake news", meaning: "tin giả", phrase: "<strong>Fake news</strong> spreads quickly on social media.", category: "news" },
+            { word: "Report", meaning: "báo cáo, bài báo", phrase: "The <strong>report</strong> says the economy is improving.", category: "news" },
+            { word: "Journalist", meaning: "nhà báo", phrase: "The <strong>journalist</strong> interviewed the president.", category: "news" },
+            { word: "Article", meaning: "bài báo", phrase: "I read an interesting <strong>article</strong> about space.", category: "news" },
+            { word: "Headline", meaning: "tiêu đề", phrase: "The <strong>headline</strong> grabbed everyone's attention.", category: "news" },
+            { word: "Broadcast", meaning: "phát sóng", phrase: "The news is <strong>broadcast</strong> at 7 PM every day.", category: "news" },
+            { word: "Social media", meaning: "mạng xã hội", phrase: "Many people get news from <strong>social media</strong>.", category: "news" },
+            { word: "Verify", meaning: "xác minh", phrase: "Always <strong>verify</strong> information before sharing.", category: "news" },
+            { word: "Fact-check", meaning: "kiểm tra sự thật", phrase: "You should <strong>fact-check</strong> stories before believing them.", category: "news" },
+            { word: "Misinformation", meaning: "thông tin sai lệch", phrase: "<strong>Misinformation</strong> about health can be dangerous.", category: "news" },
+            { word: "Viral", meaning: "lan truyền mạnh", phrase: "The video went <strong>viral</strong> overnight.", category: "news" },
+            { word: "Trend", meaning: "xu hướng", phrase: "This topic is <strong>trending</strong> on Twitter.", category: "news" },
+            { word: "Update", meaning: "cập nhật", phrase: "We'll provide more <strong>updates</strong> later.", category: "news" },
+            { word: "Coverage", meaning: "đưa tin", phrase: "The news <strong>coverage</strong> of the event was excellent.", category: "news" },
+            { word: "Interview", meaning: "phỏng vấn", phrase: "The <strong>interview</strong> with the celebrity was very interesting.", category: "news" },
+            { word: "Quote", meaning: "trích dẫn", phrase: "The article includes a <strong>quote</strong> from the expert.", category: "news" }
+        ];
+        const categoryLabels = {
+            certainty: { label: "Mức độ chắc chắn", class: "cat-certainty" },
+            investigation: { label: "Điều tra", class: "cat-investigation" },
+            credibility: { label: "Độ tin cậy", class: "cat-credibility" },
+            news: { label: "Tin tức", class: "cat-news" }
+        };
+        let learnedWords = JSON.parse(localStorage.getItem('unit9Learned') || '[]');
+        let currentFilter = 'all';
+        function speakWord(word, button) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(word);
+            utterance.lang = 'en-US'; utterance.rate = 0.85; utterance.pitch = 1;
+            const voices = window.speechSynthesis.getVoices();
+            const englishVoice = voices.find(v => v.lang.startsWith('en'));
+            if (englishVoice) utterance.voice = englishVoice;
+            button.classList.add('speaking');
+            utterance.onend = () => button.classList.remove('speaking');
+            utterance.onerror = () => button.classList.remove('speaking');
+            window.speechSynthesis.speak(utterance);
+        }
+        function speakPhrase(phraseHtml, button) {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = phraseHtml;
+            speakWord(tempDiv.textContent || tempDiv.innerText, button);
+        }
+        if (window.speechSynthesis.onvoiceschanged !== undefined) {
+            window.speechSynthesis.onvoiceschanged = () => { };
+        }
+        function renderCards(filter = 'all', search = '') {
+            const grid = document.getElementById('vocabGrid');
+            grid.innerHTML = '';
+            let filteredData = vocabularyData;
+            if (filter !== 'all') filteredData = filteredData.filter(v => v.category === filter);
+            if (search) {
+                const s = search.toLowerCase();
+                filteredData = filteredData.filter(v => v.word.toLowerCase().includes(s) || v.meaning.toLowerCase().includes(s));
+            }
+            filteredData.forEach(vocab => {
+                const cat = categoryLabels[vocab.category];
+                const isLearned = learnedWords.includes(vocab.word);
+                const card = document.createElement('div');
+                card.className = `vocab-card ${isLearned ? 'learned' : ''}`;
+                card.style.opacity = isLearned ? '0.7' : '1';
+                const phraseEscaped = vocab.phrase.replace(/'/g, "\\'");
+                card.innerHTML = `
+                    <span class="category-tag ${cat.class}">${cat.label}</span>
+                    <div class="word">
+                        <button class="speak-btn" onclick="event.stopPropagation(); speakWord('${vocab.word}', this)" title="Nghe phát âm từ">🔊</button>
+                        <span>${isLearned ? '✅ ' : ''}${vocab.word}</span>
+                    </div>
+                    <div class="meaning">${vocab.meaning}</div>
+                    <div class="phrase">
+                        <div class="phrase-header">
+                            <button class="speak-btn" onclick="event.stopPropagation(); speakPhrase('${phraseEscaped}', this)" title="Nghe câu ví dụ">🔊</button>
+                            <span class="phrase-label">Ví dụ:</span>
+                        </div>
+                        <p class="phrase-text">${vocab.phrase}</p>
+                    </div>`;
+                card.addEventListener('click', () => card.classList.toggle('expanded'));
+                card.addEventListener('dblclick', () => toggleLearned(vocab.word));
+                grid.appendChild(card);
+            });
+            updateProgress();
+        }
+        function toggleLearned(word) {
+            if (learnedWords.includes(word)) learnedWords = learnedWords.filter(w => w !== word);
+            else learnedWords.push(word);
+            localStorage.setItem('unit9Learned', JSON.stringify(learnedWords));
+            renderCards(currentFilter, document.getElementById('searchInput').value);
+        }
+        function updateProgress() {
+            const total = vocabularyData.length;
+            const learned = learnedWords.length;
+            const percent = Math.round((learned / total) * 100);
+            document.getElementById('learnedWords').textContent = learned;
+            document.getElementById('totalWords').textContent = total;
+            document.getElementById('progressFill').style.width = percent + '%';
+            document.getElementById('progressText').textContent = percent + '%';
+        }
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilter = btn.dataset.filter;
+                renderCards(currentFilter, document.getElementById('searchInput').value);
+            });
+        });
+        document.getElementById('searchInput').addEventListener('input', e => renderCards(currentFilter, e.target.value));
+        renderCards();
+    </script>
+</body>
+
+</html>

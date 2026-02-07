@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 10 - Stress & Technology</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #10b981;
+            --secondary: #06b6d4;
+            --success: #10b981;
+            --dark: #1e1b4b;
+            --light: #f8fafc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            color: white;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 20px 40px;
+            border-radius: 20px;
+            text-align: center;
+            color: white;
+        }
+
+        .stat-card h3 {
+            font-size: 2.5rem;
+        }
+
+        .stat-card p {
+            opacity: 0.8;
+        }
+
+        .filter-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 30px 0;
+        }
+
+        .filter-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+            font-size: 0.95rem;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: white;
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .vocab-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .vocab-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vocab-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--primary), var(--secondary));
+        }
+
+        .vocab-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .vocab-card .word {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .speak-btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .speak-btn:hover {
+            transform: scale(1.15);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+        }
+
+        .speak-btn.speaking {
+            animation: pulse 0.8s infinite;
+            background: linear-gradient(135deg, #f59e0b, #f97316);
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .vocab-card .meaning {
+            color: var(--primary);
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
+
+        .vocab-card .phrase {
+            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #334155;
+            display: none;
+        }
+
+        .vocab-card.expanded .phrase {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .vocab-card .phrase strong {
+            color: var(--primary);
+            background: #a7f3d0;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .phrase-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .phrase-header .speak-btn {
+            width: 28px;
+            height: 28px;
+            font-size: 12px;
+        }
+
+        .phrase-label {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 0.85rem;
+        }
+
+        .phrase-text {
+            margin: 0;
+        }
+
+        .category-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .cat-stress {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .cat-hobbies {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .cat-technology {
+            background: #f3e8ff;
+            color: #9333ea;
+        }
+
+        .cat-risk {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .search-box {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            width: 100%;
+            max-width: 500px;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            font-family: inherit;
+        }
+
+        .search-box input:focus {
+            outline: 3px solid var(--primary);
+        }
+
+        .progress-bar {
+            width: 100%;
+            max-width: 500px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            margin: 20px auto;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f59e0b, #f97316);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .learned-count {
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: white;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            .vocab-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🧘 Unit 10: Stress & Technology</h1>
+            <p>Học từ vựng qua phương pháp cụm từ - Click vào thẻ để xem ví dụ</p>
+        </header>
+        <div class="stats">
+            <div class="stat-card">
+                <h3 id="totalWords">0</h3>
+                <p>Tổng từ vựng</p>
+            </div>
+            <div class="stat-card">
+                <h3>4</h3>
+                <p>Nhóm chủ đề</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="learnedWords">0</h3>
+                <p>Đã học</p>
+            </div>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <p class="learned-count">Tiến độ: <span id="progressText">0%</span></p>
+        <div class="search-box"><input type="text" id="searchInput" placeholder="🔍 Tìm kiếm từ vựng..."></div>
+        <div class="filter-tabs">
+            <button class="filter-btn active" data-filter="all">Tất cả</button>
+            <button class="filter-btn" data-filter="stress">Căng thẳng</button>
+            <button class="filter-btn" data-filter="hobbies">Sở thích</button>
+            <button class="filter-btn" data-filter="technology">Công nghệ</button>
+            <button class="filter-btn" data-filter="risk">Rủi ro & Mạo hiểm</button>
+        </div>
+        <div class="vocab-grid" id="vocabGrid"></div>
+        <footer>
+            <p>💡 Mẹo: Click vào thẻ để xem câu ví dụ, double-click để đánh dấu đã học</p>
+        </footer>
+    </div>
+    <script>
+        const vocabularyData = [
+            // Stress
+            { word: "Stress", meaning: "căng thẳng", phrase: "Work <strong>stress</strong> can affect your health.", category: "stress" },
+            { word: "Relax", meaning: "thư giãn", phrase: "I like to <strong>relax</strong> by listening to music.", category: "stress" },
+            { word: "Laid back", meaning: "thoải mái, dễ tính", phrase: "He's very <strong>laid back</strong> and never gets angry.", category: "stress" },
+            { word: "On call", meaning: "trực, sẵn sàng", phrase: "Doctors are often <strong>on call</strong> at night.", category: "stress" },
+            { word: "Nervous wreck", meaning: "người cực kỳ lo lắng", phrase: "Before exams, she becomes a <strong>nervous wreck</strong>.", category: "stress" },
+            { word: "Slack off", meaning: "lười biếng, làm qua loa", phrase: "Don't <strong>slack off</strong> just because the boss isn't here.", category: "stress" },
+            { word: "Keep up", meaning: "theo kịp", phrase: "It's hard to <strong>keep up</strong> with all the work.", category: "stress" },
+            { word: "Draw the line", meaning: "đặt ra giới hạn", phrase: "You need to <strong>draw the line</strong> between work and personal life.", category: "stress" },
+            { word: "Burn out", meaning: "kiệt sức", phrase: "Working 80 hours a week will make you <strong>burn out</strong>.", category: "stress" },
+            { word: "Overwhelmed", meaning: "quá tải", phrase: "I feel <strong>overwhelmed</strong> with all these deadlines.", category: "stress" },
+            { word: "Pressure", meaning: "áp lực", phrase: "Students face a lot of <strong>pressure</strong> during exams.", category: "stress" },
+            { word: "Deadline", meaning: "hạn chót", phrase: "The <strong>deadline</strong> for the project is next Friday.", category: "stress" },
+            { word: "Workload", meaning: "khối lượng công việc", phrase: "My <strong>workload</strong> has doubled this month.", category: "stress" },
+            { word: "Balance", meaning: "sự cân bằng", phrase: "Finding work-life <strong>balance</strong> is important.", category: "stress" },
+            { word: "Breathe", meaning: "thở", phrase: "Just <strong>breathe</strong> deeply and calm down.", category: "stress" },
+            { word: "Meditation", meaning: "thiền", phrase: "<strong>Meditation</strong> helps reduce stress and anxiety.", category: "stress" },
+            { word: "Yoga", meaning: "yoga", phrase: "I do <strong>yoga</strong> every morning to stay calm.", category: "stress" },
+            { word: "Exercise", meaning: "tập thể dục", phrase: "Regular <strong>exercise</strong> helps manage stress.", category: "stress" },
+            { word: "Rest", meaning: "nghỉ ngơi", phrase: "You need to <strong>rest</strong> when you're tired.", category: "stress" },
+            { word: "Sleep", meaning: "ngủ", phrase: "Getting enough <strong>sleep</strong> is essential for health.", category: "stress" },
+            // Hobbies
+            { word: "Hobby", meaning: "sở thích", phrase: "Reading is my favorite <strong>hobby</strong>.", category: "hobbies" },
+            { word: "Interest", meaning: "sự quan tâm, hứng thú", phrase: "She has an <strong>interest</strong> in photography.", category: "hobbies" },
+            { word: "Pastime", meaning: "hoạt động giải trí", phrase: "Gardening is a popular <strong>pastime</strong> for many people.", category: "hobbies" },
+            { word: "Collect", meaning: "sưu tầm, thu thập", phrase: "He likes to <strong>collect</strong> old coins.", category: "hobbies" },
+            { word: "Build", meaning: "xây dựng, lắp ráp", phrase: "Kids love to <strong>build</strong> things with Lego.", category: "hobbies" },
+            { word: "Create", meaning: "sáng tạo, tạo ra", phrase: "Artists <strong>create</strong> beautiful paintings.", category: "hobbies" },
+            { word: "Learn", meaning: "học", phrase: "I want to <strong>learn</strong> how to play guitar.", category: "hobbies" },
+            { word: "Skill", meaning: "kỹ năng", phrase: "Painting requires <strong>skill</strong> and practice.", category: "hobbies" },
+            { word: "Dabble", meaning: "thử làm cho biết", phrase: "I <strong>dabble</strong> in cooking but I'm not an expert.", category: "hobbies" },
+            { word: "Master", meaning: "thành thạo", phrase: "It takes years to <strong>master</strong> a musical instrument.", category: "hobbies" },
+            { word: "Passionate", meaning: "đam mê", phrase: "She is <strong>passionate</strong> about dancing.", category: "hobbies" },
+            { word: "Enthusiastic", meaning: "nhiệt tình", phrase: "He is very <strong>enthusiastic</strong> about his new hobby.", category: "hobbies" },
+            { word: "Amateur", meaning: "người nghiệp dư", phrase: "I'm just an <strong>amateur</strong> photographer.", category: "hobbies" },
+            { word: "Pro", meaning: "chuyên nghiệp", phrase: "He plays tennis like a <strong>pro</strong>.", category: "hobbies" },
+            { word: "Club", meaning: "câu lạc bộ", phrase: "I joined a book <strong>club</strong> last month.", category: "hobbies" },
+            { word: "Group", meaning: "nhóm", phrase: "Our hiking <strong>group</strong> meets every weekend.", category: "hobbies" },
+            { word: "Share", meaning: "chia sẻ", phrase: "I love to <strong>share</strong> my photos on Instagram.", category: "hobbies" },
+            { word: "Enjoy", meaning: "thích, tận hưởng", phrase: "I really <strong>enjoy</strong> swimming in the summer.", category: "hobbies" },
+            { word: "Fun", meaning: "niềm vui", phrase: "Playing video games is <strong>fun</strong> for me.", category: "hobbies" },
+            { word: "Leisure", meaning: "thời gian rảnh", phrase: "What do you do in your <strong>leisure</strong> time?", category: "hobbies" },
+            // Technology
+            { word: "Smartphone", meaning: "điện thoại thông minh", phrase: "Almost everyone has a <strong>smartphone</strong> today.", category: "technology" },
+            { word: "Tablet", meaning: "máy tính bảng", phrase: "Kids love playing games on <strong>tablets</strong>.", category: "technology" },
+            { word: "App", meaning: "ứng dụng", phrase: "This <strong>app</strong> helps you learn languages.", category: "technology" },
+            { word: "Social media", meaning: "mạng xã hội", phrase: "I spend too much time on <strong>social media</strong>.", category: "technology" },
+            { word: "Text", meaning: "nhắn tin", phrase: "I'll <strong>text</strong> you when I arrive.", category: "technology" },
+            { word: "Post", meaning: "đăng bài", phrase: "She <strong>posts</strong> photos on Instagram every day.", category: "technology" },
+            { word: "Scroll", meaning: "lướt (màn hình)", phrase: "I spend hours <strong>scrolling</strong> through TikTok.", category: "technology" },
+            { word: "Addicted", meaning: "nghiện", phrase: "Many teenagers are <strong>addicted</strong> to their phones.", category: "technology" },
+            { word: "Connected", meaning: "được kết nối", phrase: "We are always <strong>connected</strong> through the internet.", category: "technology" },
+            { word: "Disconnect", meaning: "ngắt kết nối", phrase: "Sometimes you need to <strong>disconnect</strong> and relax.", category: "technology" },
+            { word: "Distraction", meaning: "sự xao nhãng", phrase: "Phones can be a big <strong>distraction</strong> at work.", category: "technology" },
+            { word: "Focus", meaning: "sự tập trung", phrase: "I need to <strong>focus</strong> on my studies.", category: "technology" },
+            { word: "Notification", meaning: "thông báo", phrase: "I get too many <strong>notifications</strong> every day.", category: "technology" },
+            { word: "Screen time", meaning: "thời gian dùng thiết bị", phrase: "Parents worry about their kids' <strong>screen time</strong>.", category: "technology" },
+            { word: "Online", meaning: "trực tuyến", phrase: "We had an <strong>online</strong> meeting this morning.", category: "technology" },
+            { word: "Digital", meaning: "kỹ thuật số", phrase: "We live in a <strong>digital</strong> age.", category: "technology" },
+            { word: "Virtual", meaning: "ảo", phrase: "<strong>Virtual</strong> reality games are very exciting.", category: "technology" },
+            { word: "Cyber", meaning: "thuộc không gian mạng", phrase: "<strong>Cyber</strong> security is very important today.", category: "technology" },
+            { word: "Tech", meaning: "công nghệ", phrase: "He works in the <strong>tech</strong> industry.", category: "technology" },
+            { word: "Device", meaning: "thiết bị", phrase: "Turn off all <strong>devices</strong> before sleeping.", category: "technology" },
+            // Risk
+            { word: "Risk", meaning: "rủi ro", phrase: "There's a <strong>risk</strong> of injury in extreme sports.", category: "risk" },
+            { word: "Danger", meaning: "nguy hiểm", phrase: "There's a <strong>danger</strong> of falling from that cliff.", category: "risk" },
+            { word: "Safe", meaning: "an toàn", phrase: "Always wear a helmet to stay <strong>safe</strong>.", category: "risk" },
+            { word: "Caution", meaning: "sự thận trọng", phrase: "Use <strong>caution</strong> when driving in the rain.", category: "risk" },
+            { word: "Dare", meaning: "dám làm", phrase: "Would you <strong>dare</strong> to jump from that height?", category: "risk" },
+            { word: "Adventure", meaning: "cuộc phiêu lưu", phrase: "Going to Africa was a real <strong>adventure</strong>.", category: "risk" },
+            { word: "Extreme", meaning: "mạo hiểm, cực độ", phrase: "<strong>Extreme</strong> sports like skydiving are thrilling.", category: "risk" },
+            { word: "Sport", meaning: "thể thao", phrase: "What's your favorite <strong>sport</strong>?", category: "risk" },
+            { word: "Thrill", meaning: "cảm giác mạnh", phrase: "I love the <strong>thrill</strong> of roller coasters.", category: "risk" },
+            { word: "Fear", meaning: "nỗi sợ", phrase: "She has a <strong>fear</strong> of heights.", category: "risk" },
+            { word: "Brave", meaning: "dũng cảm", phrase: "Firefighters are very <strong>brave</strong> people.", category: "risk" },
+            { word: "Courageous", meaning: "can đảm", phrase: "It takes a <strong>courageous</strong> person to speak up.", category: "risk" },
+            { word: "Coward", meaning: "kẻ hèn nhát", phrase: "Don't be a <strong>coward</strong> - try something new!", category: "risk" },
+            { word: "Accident", meaning: "tai nạn", phrase: "There was a car <strong>accident</strong> on the highway.", category: "risk" },
+            { word: "Injury", meaning: "chấn thương", phrase: "He suffered a leg <strong>injury</strong> while playing football.", category: "risk" },
+            { word: "Survive", meaning: "sống sót", phrase: "She <strong>survived</strong> a dangerous mountain climb.", category: "risk" },
+            { word: "Challenge", meaning: "thử thách", phrase: "Climbing Everest is a huge <strong>challenge</strong>.", category: "risk" },
+            { word: "Limit", meaning: "giới hạn", phrase: "Don't push yourself beyond your <strong>limits</strong>.", category: "risk" },
+            { word: "Adrenaline", meaning: "hoóc-môn adrenaline", phrase: "Bungee jumping gives you an <strong>adrenaline</strong> rush.", category: "risk" },
+            { word: "Precaution", meaning: "biện pháp phòng ngừa", phrase: "Take <strong>precautions</strong> to avoid injury.", category: "risk" }
+        ];
+        const categoryLabels = {
+            stress: { label: "Căng thẳng", class: "cat-stress" },
+            hobbies: { label: "Sở thích", class: "cat-hobbies" },
+            technology: { label: "Công nghệ", class: "cat-technology" },
+            risk: { label: "Rủi ro & Mạo hiểm", class: "cat-risk" }
+        };
+        let learnedWords = JSON.parse(localStorage.getItem('unit10Learned') || '[]');
+        let currentFilter = 'all';
+        function speakWord(word, button) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(word);
+            utterance.lang = 'en-US'; utterance.rate = 0.85; utterance.pitch = 1;
+            const voices = window.speechSynthesis.getVoices();
+            const englishVoice = voices.find(v => v.lang.startsWith('en'));
+            if (englishVoice) utterance.voice = englishVoice;
+            button.classList.add('speaking');
+            utterance.onend = () => button.classList.remove('speaking');
+            utterance.onerror = () => button.classList.remove('speaking');
+            window.speechSynthesis.speak(utterance);
+        }
+        function speakPhrase(phraseHtml, button) {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = phraseHtml;
+            speakWord(tempDiv.textContent || tempDiv.innerText, button);
+        }
+        if (window.speechSynthesis.onvoiceschanged !== undefined) {
+            window.speechSynthesis.onvoiceschanged = () => { };
+        }
+        function renderCards(filter = 'all', search = '') {
+            const grid = document.getElementById('vocabGrid');
+            grid.innerHTML = '';
+            let filteredData = vocabularyData;
+            if (filter !== 'all') filteredData = filteredData.filter(v => v.category === filter);
+            if (search) {
+                const s = search.toLowerCase();
+                filteredData = filteredData.filter(v => v.word.toLowerCase().includes(s) || v.meaning.toLowerCase().includes(s));
+            }
+            filteredData.forEach(vocab => {
+                const cat = categoryLabels[vocab.category];
+                const isLearned = learnedWords.includes(vocab.word);
+                const card = document.createElement('div');
+                card.className = `vocab-card ${isLearned ? 'learned' : ''}`;
+                card.style.opacity = isLearned ? '0.7' : '1';
+                const phraseEscaped = vocab.phrase.replace(/'/g, "\\'");
+                card.innerHTML = `
+                    <span class="category-tag ${cat.class}">${cat.label}</span>
+                    <div class="word">
+                        <button class="speak-btn" onclick="event.stopPropagation(); speakWord('${vocab.word}', this)" title="Nghe phát âm từ">🔊</button>
+                        <span>${isLearned ? '✅ ' : ''}${vocab.word}</span>
+                    </div>
+                    <div class="meaning">${vocab.meaning}</div>
+                    <div class="phrase">
+                        <div class="phrase-header">
+                            <button class="speak-btn" onclick="event.stopPropagation(); speakPhrase('${phraseEscaped}', this)" title="Nghe câu ví dụ">🔊</button>
+                            <span class="phrase-label">Ví dụ:</span>
+                        </div>
+                        <p class="phrase-text">${vocab.phrase}</p>
+                    </div>`;
+                card.addEventListener('click', () => card.classList.toggle('expanded'));
+                card.addEventListener('dblclick', () => toggleLearned(vocab.word));
+                grid.appendChild(card);
+            });
+            updateProgress();
+        }
+        function toggleLearned(word) {
+            if (learnedWords.includes(word)) learnedWords = learnedWords.filter(w => w !== word);
+            else learnedWords.push(word);
+            localStorage.setItem('unit10Learned', JSON.stringify(learnedWords));
+            renderCards(currentFilter, document.getElementById('searchInput').value);
+        }
+        function updateProgress() {
+            const total = vocabularyData.length;
+            const learned = learnedWords.length;
+            const percent = Math.round((learned / total) * 100);
+            document.getElementById('learnedWords').textContent = learned;
+            document.getElementById('totalWords').textContent = total;
+            document.getElementById('progressFill').style.width = percent + '%';
+            document.getElementById('progressText').textContent = percent + '%';
+        }
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilter = btn.dataset.filter;
+                renderCards(currentFilter, document.getElementById('searchInput').value);
+            });
+        });
+        document.getElementById('searchInput').addEventListener('input', e => renderCards(currentFilter, e.target.value));
+        renderCards();
+    </script>
+</body>
+
+</html>

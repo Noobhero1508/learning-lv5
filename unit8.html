@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit 8 - Family & Demographics</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0891b2;
+            --secondary: #0d9488;
+            --success: #10b981;
+            --dark: #1e1b4b;
+            --light: #f8fafc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #0891b2 0%, #7c3aed 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            color: white;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 20px 40px;
+            border-radius: 20px;
+            text-align: center;
+            color: white;
+        }
+
+        .stat-card h3 {
+            font-size: 2.5rem;
+        }
+
+        .stat-card p {
+            opacity: 0.8;
+        }
+
+        .filter-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 30px 0;
+        }
+
+        .filter-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+            font-size: 0.95rem;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: white;
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .vocab-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .vocab-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vocab-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--primary), var(--secondary));
+        }
+
+        .vocab-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .vocab-card .word {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .speak-btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .speak-btn:hover {
+            transform: scale(1.15);
+            box-shadow: 0 4px 15px rgba(8, 145, 178, 0.4);
+        }
+
+        .speak-btn.speaking {
+            animation: pulse 0.8s infinite;
+            background: linear-gradient(135deg, #10b981, #34d399);
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .vocab-card .meaning {
+            color: var(--primary);
+            font-weight: 500;
+            margin-bottom: 15px;
+        }
+
+        .vocab-card .phrase {
+            background: linear-gradient(135deg, #ecfeff, #cffafe);
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #334155;
+            display: none;
+        }
+
+        .vocab-card.expanded .phrase {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .vocab-card .phrase strong {
+            color: var(--primary);
+            background: #a5f3fc;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .phrase-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .phrase-header .speak-btn {
+            width: 28px;
+            height: 28px;
+            font-size: 12px;
+        }
+
+        .phrase-label {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 0.85rem;
+        }
+
+        .phrase-text {
+            margin: 0;
+        }
+
+        .category-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .cat-demographics {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .cat-parenting {
+            background: #fce7f3;
+            color: #db2777;
+        }
+
+        .cat-generation {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .cat-elderly {
+            background: #d1fae5;
+            color: #059669;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .search-box {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            width: 100%;
+            max-width: 500px;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            font-family: inherit;
+        }
+
+        .search-box input:focus {
+            outline: 3px solid var(--primary);
+        }
+
+        .progress-bar {
+            width: 100%;
+            max-width: 500px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            margin: 20px auto;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #34d399);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .learned-count {
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: white;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            .vocab-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>👨‍👩‍👧‍👦 Unit 8: Family & Demographics</h1>
+            <p>Học từ vựng qua phương pháp cụm từ - Click vào thẻ để xem ví dụ</p>
+        </header>
+        <div class="stats">
+            <div class="stat-card">
+                <h3 id="totalWords">0</h3>
+                <p>Tổng từ vựng</p>
+            </div>
+            <div class="stat-card">
+                <h3>4</h3>
+                <p>Nhóm chủ đề</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="learnedWords">0</h3>
+                <p>Đã học</p>
+            </div>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <p class="learned-count">Tiến độ: <span id="progressText">0%</span></p>
+        <div class="search-box"><input type="text" id="searchInput" placeholder="🔍 Tìm kiếm từ vựng..."></div>
+        <div class="filter-tabs">
+            <button class="filter-btn active" data-filter="all">Tất cả</button>
+            <button class="filter-btn" data-filter="demographics">Nhân khẩu học</button>
+            <button class="filter-btn" data-filter="parenting">Nuôi dạy con</button>
+            <button class="filter-btn" data-filter="generation">Thế hệ</button>
+            <button class="filter-btn" data-filter="elderly">Người cao tuổi</button>
+        </div>
+        <div class="vocab-grid" id="vocabGrid"></div>
+        <footer>
+            <p>💡 Mẹo: Click vào thẻ để xem câu ví dụ, double-click để đánh dấu đã học</p>
+        </footer>
+    </div>
+    <script>
+        const vocabularyData = [
+            // Demographics
+            { word: "Birthrate", meaning: "tỷ lệ sinh", phrase: "The <strong>birthrate</strong> in many countries is going down.", category: "demographics" },
+            { word: "Life expectancy", meaning: "tuổi thọ", phrase: "Japan has one of the highest <strong>life expectancy</strong> rates in the world.", category: "demographics" },
+            { word: "Extended family", meaning: "gia đình mở rộng", phrase: "My grandparents live with us in an <strong>extended family</strong>.", category: "demographics" },
+            { word: "Nuclear family", meaning: "gia đình hạt nhân", phrase: "A <strong>nuclear family</strong> consists of parents and their children.", category: "demographics" },
+            { word: "Trend", meaning: "xu hướng", phrase: "There is a <strong>trend</strong> of people having fewer children.", category: "demographics" },
+            { word: "Population", meaning: "dân số", phrase: "The world <strong>population</strong> is over 8 billion people.", category: "demographics" },
+            { word: "Aging", meaning: "già hóa", phrase: "Many countries face <strong>aging</strong> population problems.", category: "demographics" },
+            { word: "Marry", meaning: "kết hôn", phrase: "They decided to <strong>marry</strong> after dating for three years.", category: "demographics" },
+            { word: "Divorce", meaning: "ly hôn", phrase: "The <strong>divorce</strong> rate has increased in recent years.", category: "demographics" },
+            { word: "Single", meaning: "độc thân", phrase: "More young people choose to stay <strong>single</strong> longer.", category: "demographics" },
+            { word: "Couple", meaning: "cặp đôi", phrase: "The young <strong>couple</strong> just moved into a new apartment.", category: "demographics" },
+            { word: "Childless", meaning: "không có con", phrase: "Some couples choose to be <strong>childless</strong> by choice.", category: "demographics" },
+            { word: "Workforce", meaning: "lực lượng lao động", phrase: "Women now make up half of the <strong>workforce</strong>.", category: "demographics" },
+            { word: "Support", meaning: "hỗ trợ", phrase: "Families need to <strong>support</strong> each other during hard times.", category: "demographics" },
+            { word: "Relative", meaning: "họ hàng", phrase: "We visited our <strong>relatives</strong> during the Lunar New Year.", category: "demographics" },
+            { word: "Ancestor", meaning: "tổ tiên", phrase: "Vietnamese people honor their <strong>ancestors</strong> on special days.", category: "demographics" },
+            { word: "Generation", meaning: "thế hệ", phrase: "Each <strong>generation</strong> has different values and beliefs.", category: "demographics" },
+            { word: "Statistics", meaning: "số liệu thống kê", phrase: "<strong>Statistics</strong> show that family size is getting smaller.", category: "demographics" },
+            { word: "Demography", meaning: "nhân khẩu học", phrase: "<strong>Demography</strong> studies how populations change over time.", category: "demographics" },
+            { word: "Household", meaning: "hộ gia đình", phrase: "The average <strong>household</strong> has 3-4 people.", category: "demographics" },
+            // Parenting
+            { word: "Strict", meaning: "nghiêm khắc", phrase: "My parents were very <strong>strict</strong> about homework.", category: "parenting" },
+            { word: "Lenient", meaning: "khoan dung, nới lỏng", phrase: "Some parents are too <strong>lenient</strong> with their children.", category: "parenting" },
+            { word: "Overprotective", meaning: "bao bọc quá mức", phrase: "<strong>Overprotective</strong> parents don't let their children take risks.", category: "parenting" },
+            { word: "Rebellious", meaning: "nổi loạn", phrase: "Teenagers can become <strong>rebellious</strong> when parents are too strict.", category: "parenting" },
+            { word: "Spoiled", meaning: "hư hỏng (được nuông chiều)", phrase: "A <strong>spoiled</strong> child always wants everything they ask for.", category: "parenting" },
+            { word: "Disrespectful", meaning: "thiếu tôn trọng", phrase: "It's <strong>disrespectful</strong> to talk back to your parents.", category: "parenting" },
+            { word: "Obey", meaning: "vâng lời", phrase: "Children should <strong>obey</strong> their parents' rules.", category: "parenting" },
+            { word: "Disobey", meaning: "không vâng lời", phrase: "If you <strong>disobey</strong> the rules, there will be consequences.", category: "parenting" },
+            { word: "Rule", meaning: "quy tắc", phrase: "Every family has different <strong>rules</strong> for their children.", category: "parenting" },
+            { word: "Curfew", meaning: "giới nghiêm", phrase: "My <strong>curfew</strong> is 10 PM on school nights.", category: "parenting" },
+            { word: "Ground", meaning: "cấm ra ngoài (phạt)", phrase: "My parents <strong>grounded</strong> me for a week for lying.", category: "parenting" },
+            { word: "Argue", meaning: "tranh luận", phrase: "Teenagers often <strong>argue</strong> with their parents about freedom.", category: "parenting" },
+            { word: "Conflict", meaning: "xung đột", phrase: "There is sometimes <strong>conflict</strong> between parents and teens.", category: "parenting" },
+            { word: "Independent", meaning: "độc lập", phrase: "Parents should teach children to be <strong>independent</strong>.", category: "parenting" },
+            { word: "Mature", meaning: "trưởng thành", phrase: "She is very <strong>mature</strong> for her age.", category: "parenting" },
+            { word: "Guidance", meaning: "sự hướng dẫn", phrase: "Children need <strong>guidance</strong> from their parents.", category: "parenting" },
+            { word: "Freedom", meaning: "sự tự do", phrase: "Teens want more <strong>freedom</strong> as they get older.", category: "parenting" },
+            { word: "Trust", meaning: "tin tưởng", phrase: "Parents and children need to build <strong>trust</strong>.", category: "parenting" },
+            { word: "Relationship", meaning: "mối quan hệ", phrase: "A good parent-child <strong>relationship</strong> is very important.", category: "parenting" },
+            { word: "Expectation", meaning: "kỳ vọng", phrase: "Parents have high <strong>expectations</strong> for their children's future.", category: "parenting" },
+            // Generation
+            { word: "Generation gap", meaning: "khoảng cách thế hệ", phrase: "The <strong>generation gap</strong> can cause misunderstandings.", category: "generation" },
+            { word: "Elder", meaning: "người cao tuổi", phrase: "We should respect our <strong>elders</strong> and their wisdom.", category: "generation" },
+            { word: "Youth", meaning: "thanh niên / tuổi trẻ", phrase: "The <strong>youth</strong> of today are very tech-savvy.", category: "generation" },
+            { word: "Respect", meaning: "tôn trọng", phrase: "In Asian culture, <strong>respect</strong> for elders is very important.", category: "generation" },
+            { word: "Value", meaning: "giá trị", phrase: "Different generations have different <strong>values</strong>.", category: "generation" },
+            { word: "Tradition", meaning: "truyền thống", phrase: "Older people often value <strong>tradition</strong> more than young people.", category: "generation" },
+            { word: "Modern", meaning: "hiện đại", phrase: "Young people prefer <strong>modern</strong> ways of doing things.", category: "generation" },
+            { word: "Technology", meaning: "công nghệ", phrase: "Older generations sometimes struggle with new <strong>technology</strong>.", category: "generation" },
+            { word: "Adapt", meaning: "thích nghi", phrase: "Everyone needs to <strong>adapt</strong> to changing times.", category: "generation" },
+            { word: "Change", meaning: "thay đổi", phrase: "Society has <strong>changed</strong> a lot in the last 50 years.", category: "generation" },
+            { word: "Attitude", meaning: "thái độ", phrase: "Different generations have different <strong>attitudes</strong> toward work.", category: "generation" },
+            { word: "Perspective", meaning: "góc nhìn", phrase: "Try to see things from your parents' <strong>perspective</strong>.", category: "generation" },
+            { word: "Experience", meaning: "kinh nghiệm", phrase: "Older people have more life <strong>experience</strong>.", category: "generation" },
+            { word: "Wisdom", meaning: "trí tuệ / sự khôn ngoan", phrase: "Grandparents share their <strong>wisdom</strong> with us.", category: "generation" },
+            { word: "Polite", meaning: "lịch sự", phrase: "Being <strong>polite</strong> to everyone is important.", category: "generation" },
+            { word: "Courtesy", meaning: "lễ nghi, lịch sự", phrase: "Show <strong>courtesy</strong> to older people on the bus.", category: "generation" },
+            { word: "Care", meaning: "chăm sóc", phrase: "We should <strong>care</strong> for our aging parents.", category: "generation" },
+            { word: "Bridge", meaning: "bắc cầu, kết nối", phrase: "Communication can <strong>bridge</strong> the generation gap.", category: "generation" },
+            { word: "Understand", meaning: "hiểu", phrase: "Try to <strong>understand</strong> why your parents worry about you.", category: "generation" },
+            { word: "Communication", meaning: "giao tiếp", phrase: "Good <strong>communication</strong> solves many family problems.", category: "generation" },
+            // Elderly
+            { word: "Nursing home", meaning: "viện dưỡng lão", phrase: "Some elderly people live in <strong>nursing homes</strong>.", category: "elderly" },
+            { word: "Assisted living", meaning: "nhà chăm sóc có hỗ trợ", phrase: "<strong>Assisted living</strong> helps seniors who need some help.", category: "elderly" },
+            { word: "Caregiver", meaning: "người chăm sóc", phrase: "A <strong>caregiver</strong> helps elderly people with daily tasks.", category: "elderly" },
+            { word: "Retire", meaning: "nghỉ hưu", phrase: "My father will <strong>retire</strong> when he turns 60.", category: "elderly" },
+            { word: "Pension", meaning: "lương hưu", phrase: "He lives on his <strong>pension</strong> after retirement.", category: "elderly" },
+            { word: "Health", meaning: "sức khỏe", phrase: "<strong>Health</strong> problems are common in old age.", category: "elderly" },
+            { word: "Lonely", meaning: "cô đơn", phrase: "Many elderly people feel <strong>lonely</strong> living alone.", category: "elderly" },
+            { word: "Dependency", meaning: "sự phụ thuộc", phrase: "<strong>Dependency</strong> on others can be hard for seniors.", category: "elderly" },
+            { word: "Burden", meaning: "gánh nặng", phrase: "Elderly parents don't want to be a <strong>burden</strong> to their children.", category: "elderly" },
+            { word: "Dignity", meaning: "phẩm giá", phrase: "Everyone deserves to age with <strong>dignity</strong>.", category: "elderly" },
+            { word: "Comfort", meaning: "thoải mái", phrase: "We want our grandparents to live in <strong>comfort</strong>.", category: "elderly" },
+            { word: "Visit", meaning: "thăm nom", phrase: "I <strong>visit</strong> my grandparents every weekend.", category: "elderly" },
+            { word: "Active", meaning: "năng động", phrase: "Staying <strong>active</strong> helps elderly people stay healthy.", category: "elderly" },
+            { word: "Engagement", meaning: "sự tham gia", phrase: "Social <strong>engagement</strong> is important for seniors.", category: "elderly" },
+            { word: "Memory", meaning: "trí nhớ", phrase: "Some elderly people have <strong>memory</strong> problems.", category: "elderly" },
+            { word: "Mobility", meaning: "khả năng di chuyển", phrase: "Limited <strong>mobility</strong> makes life harder for seniors.", category: "elderly" },
+            { word: "Frail", meaning: "yếu ớt", phrase: "My grandmother has become quite <strong>frail</strong> recently.", category: "elderly" },
+            { word: "Family", meaning: "gia đình", phrase: "<strong>Family</strong> support is important for elderly people.", category: "elderly" },
+            { word: "Duty", meaning: "bổn phận", phrase: "Taking care of parents is our <strong>duty</strong>.", category: "elderly" }
+        ];
+        const categoryLabels = {
+            demographics: { label: "Nhân khẩu học", class: "cat-demographics" },
+            parenting: { label: "Nuôi dạy con", class: "cat-parenting" },
+            generation: { label: "Thế hệ", class: "cat-generation" },
+            elderly: { label: "Người cao tuổi", class: "cat-elderly" }
+        };
+        let learnedWords = JSON.parse(localStorage.getItem('unit8Learned') || '[]');
+        let currentFilter = 'all';
+        function speakWord(word, button) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(word);
+            utterance.lang = 'en-US'; utterance.rate = 0.85; utterance.pitch = 1;
+            const voices = window.speechSynthesis.getVoices();
+            const englishVoice = voices.find(v => v.lang.startsWith('en'));
+            if (englishVoice) utterance.voice = englishVoice;
+            button.classList.add('speaking');
+            utterance.onend = () => button.classList.remove('speaking');
+            utterance.onerror = () => button.classList.remove('speaking');
+            window.speechSynthesis.speak(utterance);
+        }
+        function speakPhrase(phraseHtml, button) {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = phraseHtml;
+            speakWord(tempDiv.textContent || tempDiv.innerText, button);
+        }
+        if (window.speechSynthesis.onvoiceschanged !== undefined) {
+            window.speechSynthesis.onvoiceschanged = () => { };
+        }
+        function renderCards(filter = 'all', search = '') {
+            const grid = document.getElementById('vocabGrid');
+            grid.innerHTML = '';
+            let filteredData = vocabularyData;
+            if (filter !== 'all') filteredData = filteredData.filter(v => v.category === filter);
+            if (search) {
+                const s = search.toLowerCase();
+                filteredData = filteredData.filter(v => v.word.toLowerCase().includes(s) || v.meaning.toLowerCase().includes(s));
+            }
+            filteredData.forEach(vocab => {
+                const cat = categoryLabels[vocab.category];
+                const isLearned = learnedWords.includes(vocab.word);
+                const card = document.createElement('div');
+                card.className = `vocab-card ${isLearned ? 'learned' : ''}`;
+                card.style.opacity = isLearned ? '0.7' : '1';
+                const phraseEscaped = vocab.phrase.replace(/'/g, "\\'");
+                card.innerHTML = `
+                    <span class="category-tag ${cat.class}">${cat.label}</span>
+                    <div class="word">
+                        <button class="speak-btn" onclick="event.stopPropagation(); speakWord('${vocab.word}', this)" title="Nghe phát âm từ">🔊</button>
+                        <span>${isLearned ? '✅ ' : ''}${vocab.word}</span>
+                    </div>
+                    <div class="meaning">${vocab.meaning}</div>
+                    <div class="phrase">
+                        <div class="phrase-header">
+                            <button class="speak-btn" onclick="event.stopPropagation(); speakPhrase('${phraseEscaped}', this)" title="Nghe câu ví dụ">🔊</button>
+                            <span class="phrase-label">Ví dụ:</span>
+                        </div>
+                        <p class="phrase-text">${vocab.phrase}</p>
+                    </div>`;
+                card.addEventListener('click', () => card.classList.toggle('expanded'));
+                card.addEventListener('dblclick', () => toggleLearned(vocab.word));
+                grid.appendChild(card);
+            });
+            updateProgress();
+        }
+        function toggleLearned(word) {
+            if (learnedWords.includes(word)) learnedWords = learnedWords.filter(w => w !== word);
+            else learnedWords.push(word);
+            localStorage.setItem('unit8Learned', JSON.stringify(learnedWords));
+            renderCards(currentFilter, document.getElementById('searchInput').value);
+        }
+        function updateProgress() {
+            const total = vocabularyData.length;
+            const learned = learnedWords.length;
+            const percent = Math.round((learned / total) * 100);
+            document.getElementById('learnedWords').textContent = learned;
+            document.getElementById('totalWords').textContent = total;
+            document.getElementById('progressFill').style.width = percent + '%';
+            document.getElementById('progressText').textContent = percent + '%';
+        }
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilter = btn.dataset.filter;
+                renderCards(currentFilter, document.getElementById('searchInput').value);
+            });
+        });
+        document.getElementById('searchInput').addEventListener('input', e => renderCards(currentFilter, e.target.value));
+        renderCards();
+    </script>
+</body>
+
+</html>
